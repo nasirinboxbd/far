@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>রাজউক মৌজা অনুসন্ধান | JSON API ভিত্তিক</title>
+    <title>রাজউক মৌজা নির্দেশিকা | পূর্ণাঙ্গ তালিকা + সার্চ</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -21,19 +21,132 @@
             color: #1e2a3e;
         }
 
-        .container {
-            max-width: 950px;
+        /* Grid layout: sidebar + main content */
+        .dashboard {
+            max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.92);
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 3rem);
+            position: sticky;
+            top: 1.5rem;
+        }
+
+        .sidebar-header {
+            background: #0a2f26;
+            color: white;
+            padding: 1rem 1.2rem;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+
+        .sidebar-search {
+            padding: 0.8rem 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2edf2;
+        }
+
+        .sidebar-search input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 2rem;
+            font-family: 'Noto Sans Bengali', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .sidebar-search input:focus {
+            border-color: #2b9a7a;
+            box-shadow: 0 0 0 2px rgba(43, 154, 122, 0.2);
+        }
+
+        .mouza-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+        }
+
+        .mouza-item {
+            padding: 0.7rem 1.2rem;
+            cursor: pointer;
+            border-bottom: 1px solid #edf2f7;
+            transition: all 0.15s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .mouza-item:hover {
+            background: #e6f4ef;
+            transform: translateX(4px);
+        }
+
+        .mouza-name {
+            font-weight: 500;
+            color: #1f3b34;
+        }
+
+        .status-badge-small {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            background: #eef2ff;
+        }
+
+        .badge-full {
+            background: #c8f0e4;
+            color: #006b4c;
+        }
+
+        .badge-partial {
+            background: #ffe6cc;
+            color: #b45309;
+        }
+
+        .badge-mixed {
+            background: #e2e3e8;
+            color: #4a5568;
+        }
+
+        /* Main content area */
+        .main-content {
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(2px);
             border-radius: 2rem;
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
-            padding: 2rem 1.8rem;
-            transition: all 0.2s;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.2);
+            padding: 1.8rem;
         }
 
         h1 {
-            font-size: 1.9rem;
+            font-size: 1.7rem;
             font-weight: 700;
             background: linear-gradient(135deg, #006A4E, #0b5e42);
             background-clip: text;
@@ -41,28 +154,22 @@
             color: transparent;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 0.5rem;
-        }
-
-        h1 i {
-            background: none;
-            color: #0f7b5c;
-            font-size: 2rem;
         }
 
         .subhead {
             color: #2c4b3e;
             border-left: 4px solid #2b9a7a;
             padding-left: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.8rem;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .search-wrapper {
             position: relative;
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.5rem;
         }
 
         .search-icon {
@@ -71,27 +178,24 @@
             top: 50%;
             transform: translateY(-50%);
             color: #2b9a7a;
-            font-size: 1.2rem;
-            pointer-events: none;
+            font-size: 1.1rem;
         }
 
         #searchInput {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            font-size: 1.1rem;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            font-size: 1rem;
             font-family: 'Noto Sans Bengali', monospace;
             background: #ffffff;
             border: 2px solid #e2e8f0;
             border-radius: 60px;
             outline: none;
             transition: all 0.25s ease;
-            font-weight: 500;
         }
 
         #searchInput:focus {
             border-color: #2b9a7a;
             box-shadow: 0 8px 20px -10px rgba(43, 154, 122, 0.3);
-            transform: scale(1.01);
         }
 
         .suggestions-box {
@@ -100,11 +204,11 @@
             left: 0;
             right: 0;
             background: white;
-            border-radius: 1.5rem;
+            border-radius: 1.2rem;
             box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2);
-            max-height: 320px;
+            max-height: 280px;
             overflow-y: auto;
-            z-index: 50;
+            z-index: 60;
             border: 1px solid #eef2f6;
             display: none;
         }
@@ -115,57 +219,26 @@
         }
 
         .suggestion-item {
-            padding: 0.85rem 1.5rem;
+            padding: 0.7rem 1.2rem;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.15s;
             border-bottom: 1px solid #f0f4f9;
             font-weight: 500;
-            color: #1f3b34;
         }
 
         .suggestion-item:hover {
             background: #e6f4ef;
-            padding-left: 1.8rem;
-        }
-
-        .suggestion-item i {
-            color: #2b9a7a;
-            width: 24px;
-            margin-right: 8px;
         }
 
         .info-card {
             background: #ffffffdd;
-            backdrop-filter: blur(8px);
-            border-radius: 1.5rem;
-            padding: 1rem 1.5rem;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1.2rem;
             margin-top: 1rem;
             border: 1px solid rgba(43, 154, 122, 0.2);
-            font-size: 0.9rem;
-            color: #1f5e4a;
+            font-size: 0.85rem;
         }
 
-        .loading {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #eef2fa;
-            border-radius: 2rem;
-            padding: 0.8rem 1.2rem;
-            margin-top: 1rem;
-            color: #006a4e;
-        }
-
-        .error-message {
-            background: #ffe6e6;
-            border-left: 5px solid #d9534f;
-            padding: 0.8rem 1.2rem;
-            border-radius: 1rem;
-            color: #a94442;
-        }
-
-        /* Modal styles */
+        /* Modal (unchanged) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -182,12 +255,7 @@
             opacity: 0;
             transition: visibility 0.2s, opacity 0.25s ease;
         }
-
-        .modal-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
-
+        .modal-overlay.active { visibility: visible; opacity: 1; }
         .modal-container {
             background: #ffffff;
             width: 90%;
@@ -197,187 +265,130 @@
             overflow: hidden;
             transform: scale(0.95);
             transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 40px 60px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
         }
-
-        .modal-overlay.active .modal-container {
-            transform: scale(1);
-        }
-
+        .modal-overlay.active .modal-container { transform: scale(1); }
         .modal-header {
             background: #0a2f26;
             color: white;
-            padding: 1.2rem 1.8rem;
+            padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #2d6a58;
         }
-
-        .modal-header h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            word-break: break-word;
-        }
-
+        .modal-header h3 { font-size: 1.4rem; font-weight: 600; }
         .close-modal {
             background: none;
             border: none;
             font-size: 1.8rem;
             cursor: pointer;
             color: white;
-            transition: 0.1s;
-            line-height: 1;
         }
-
-        .close-modal:hover {
-            transform: scale(1.1);
-            color: #ffd966;
-        }
-
-        .modal-body {
-            padding: 1.8rem;
-            overflow-y: auto;
-            background: #fefcf5;
-        }
-
+        .close-modal:hover { transform: scale(1.1); color: #ffd966; }
+        .modal-body { padding: 1.5rem; overflow-y: auto; background: #fefcf5; }
         .result-card {
             background: white;
             border-radius: 1.2rem;
-            margin-bottom: 1.5rem;
-            padding: 1.2rem;
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.05);
-            border-left: 6px solid #2b9a7a;
-            transition: all 0.2s;
+            margin-bottom: 1.2rem;
+            padding: 1rem;
+            border-left: 5px solid #2b9a7a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-
-        .result-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.15);
-        }
-
         .zone-tag {
             font-weight: 700;
-            font-size: 1rem;
             background: #eafaf5;
             display: inline-block;
-            padding: 0.2rem 0.9rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 40px;
-            margin-bottom: 12px;
-            color: #006a4e;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
         }
-
         .subzone-id {
             font-family: monospace;
             background: #eef2ff;
-            padding: 0.2rem 0.6rem;
+            padding: 0.15rem 0.5rem;
             border-radius: 20px;
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
+            font-size: 0.75rem;
         }
-
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-weight: 600;
-            padding: 0.2rem 0.9rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 30px;
-            font-size: 0.8rem;
-            margin-top: 8px;
-            background: #f1f5f9;
+            font-size: 0.75rem;
+            margin-top: 6px;
         }
-
-        .status-full {
-            background: #c8f0e4;
-            color: #006b4c;
-        }
-
-        .status-partial {
-            background: #ffe6cc;
-            color: #b45309;
-        }
-
+        .status-full { background: #c8f0e4; color: #006b4c; }
+        .status-partial { background: #ffe6cc; color: #b45309; }
         .boundary-box {
             background: #f8fafc;
             border-radius: 1rem;
-            padding: 0.9rem;
-            margin-top: 12px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            border: 1px solid #e2edf2;
-            color: #2c3e4e;
+            padding: 0.8rem;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            line-height: 1.45;
         }
-
-        .boundary-label {
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 8px;
-            color: #0f4c3a;
-        }
-
         footer {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #598b78;
         }
-
         @keyframes fadeSlideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #eef2f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #2b9a7a; border-radius: 10px; }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #eef2f0;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #2b9a7a;
-            border-radius: 10px;
+        @media (max-width: 800px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .sidebar { position: relative; height: auto; max-height: 400px; top: 0; margin-bottom: 1rem; }
+            body { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>
-        <i class="fas fa-map-marked-alt"></i>
-        রাজউক মৌজা নির্দেশিকা (JSON API)
-    </h1>
-    <div class="subhead">
-        🔍 <strong>mouza.json</strong> ফাইল থেকে ডাটা লোড হয়। মৌজার নাম টাইপ করলে সাজেশন আসবে, ক্লিক করলে সাবজোন, অবস্থা (পূর্ণ/আংশিক) ও চৌহদ্দি দেখাবে।
+<div class="dashboard">
+    <!-- Sidebar: full list of all mouzas -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-list-ul"></i> সমস্ত মৌজা</h3>
+            <p>মোট <span id="totalMouzaCountSide">0</span>টি অনন্য মৌজা</p>
+        </div>
+        <div class="sidebar-search">
+            <input type="text" id="sidebarSearch" placeholder="মৌজা নাম ফিল্টার করুন..." autocomplete="off">
+        </div>
+        <div id="mouzaListContainer" class="mouza-list-container">
+            <div style="padding: 1rem; text-align: center;"><i class="fas fa-spinner fa-pulse"></i> লোড হচ্ছে...</div>
+        </div>
     </div>
 
-    <div class="search-wrapper">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="searchInput" placeholder="যেমন: জোয়ারসাহারা, আব্দুল্লাহপুর, টঙ্গী, সাভার ..." autocomplete="off" disabled>
-        <div id="suggestionsList" class="suggestions-box"></div>
-    </div>
+    <!-- Main content: search + info -->
+    <div class="main-content">
+        <h1><i class="fas fa-map-marked-alt"></i> রাজউক মৌজা নির্দেশিকা</h1>
+        <div class="subhead">🔍 JSON API (mouza.json) থেকে ডাটা লোড | পাশের তালিকা থেকে যেকোনো মৌজায় ক্লিক করুন অথবা সার্চ করুন</div>
 
-    <div id="statusArea" class="info-card">
-        <i class="fas fa-spinner fa-pulse"></i> mouza.json লোড হচ্ছে...
+        <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="মৌজার নাম লিখুন (যেমন: জোয়ারসাহারা)" autocomplete="off" disabled>
+            <div id="suggestionsList" class="suggestions-box"></div>
+        </div>
+
+        <div id="statusArea" class="info-card">
+            <i class="fas fa-spinner fa-pulse"></i> mouza.json ফাইল লোড হচ্ছে...
+        </div>
+        <footer>
+            <i class="fas fa-database"></i> সম্পূর্ণ ডাটা JSON ফাইল থেকে API কলের মাধ্যমে আনা হয়েছে | সাইডবারে সব মৌজার তালিকা
+        </footer>
     </div>
-    <footer>
-        ⚡ JSON API ভিত্তিক | ফাইল একবার লোড করে ক্লায়েন্ট সাইডে সার্চ | <i class="fab fa-github"></i> GitHub এ হোস্ট করার জন্য প্রস্তুত
-    </footer>
 </div>
 
-<!-- Modal Structure -->
+<!-- Modal for detailed view -->
 <div id="resultModal" class="modal-overlay">
     <div class="modal-container">
         <div class="modal-header">
@@ -389,11 +400,9 @@
 </div>
 
 <script>
-    // -------------------------------
-    // 1. Global state
-    // -------------------------------
-    let mouzaMap = new Map();          // key: mouza_name (string) -> array of entries
-    let uniqueMouzaList = [];          // sorted unique mouza names for suggestions
+    // ---------- Global State ----------
+    let mouzaMap = new Map();           // key: mouza_name -> array of entries
+    let uniqueMouzaList = [];           // sorted unique names
     let dataLoaded = false;
 
     // DOM elements
@@ -404,41 +413,102 @@
     const modalMouzaName = document.getElementById('modalMouzaName');
     const modalBody = document.getElementById('modalBodyContent');
     const closeModalBtn = document.getElementById('closeModalBtn');
+    const sidebarSearch = document.getElementById('sidebarSearch');
+    const mouzaListContainer = document.getElementById('mouzaListContainer');
+    const totalMouzaCountSpan = document.getElementById('totalMouzaCountSide');
 
-    // -------------------------------
-    // 2. Modal controls
-    // -------------------------------
-    function closeModal() {
-        modal.classList.remove('active');
-    }
-
-    function openModal() {
-        modal.classList.add('active');
-    }
-
+    // ---------- Modal Helpers ----------
+    function closeModal() { modal.classList.remove('active'); }
+    function openModal() { modal.classList.add('active'); }
     closeModalBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // -------------------------------
-    // 3. Fetch & parse mouza.json
-    // -------------------------------
+    // Show details inside modal (same as before)
+    function showMouzaDetailsInModal(mouzaName) {
+        if (!dataLoaded) return;
+        const entries = mouzaMap.get(mouzaName);
+        if (!entries || entries.length === 0) {
+            modalBody.innerHTML = `<div class="no-results"><i class="fas fa-exclamation-triangle"></i> "${escapeHtml(mouzaName)}" সম্পর্কে কোনো তথ্য নেই।</div>`;
+            modalMouzaName.innerText = mouzaName;
+            openModal();
+            return;
+        }
+        modalMouzaName.innerText = mouzaName;
+        let html = `<div style="margin-bottom:0.8rem;"><i class="fas fa-layer-group"></i> মোট <strong>${entries.length}</strong>টি সাবজোনে এই মৌজা উপস্থিত (JSON এর সব এন্ট্রি)।</div>`;
+        entries.forEach(entry => {
+            const statusClass = entry.status === 'পূর্ণ' ? 'status-full' : 'status-partial';
+            const statusIcon = entry.status === 'পূর্ণ' ? 'fa-check-circle' : 'fa-adjust';
+            const statusText = entry.status === 'পূর্ণ' ? 'পূর্ণ মৌজা' : 'আংশিক মৌজা';
+            html += `
+                <div class="result-card">
+                    <div class="zone-tag">
+                        <i class="fas fa-city"></i> জোন ${escapeHtml(entry.zone_no)} : ${escapeHtml(entry.zone_name)}
+                        <span class="subzone-id">সাবজোন ${escapeHtml(entry.sub_zone_id)}</span>
+                    </div>
+                    <div class="status-badge ${statusClass}">
+                        <i class="fas ${statusIcon}"></i> ${statusText}
+                    </div>
+                    <div class="boundary-box">
+                        <div class="boundary-label"><i class="fas fa-border-all"></i> সাবজোনের চৌহদ্দি</div>
+                        <div>${escapeHtml(entry.boundary)}</div>
+                    </div>
+                </div>
+            `;
+        });
+        modalBody.innerHTML = html;
+        openModal();
+    }
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // ---------- Render Sidebar List (filtered) ----------
+    function renderSidebar(filterText = '') {
+        if (!dataLoaded) return;
+        const filter = filterText.trim();
+        let filteredNames = uniqueMouzaList;
+        if (filter !== '') {
+            filteredNames = uniqueMouzaList.filter(name => name.includes(filter));
+        }
+        if (filteredNames.length === 0) {
+            mouzaListContainer.innerHTML = `<div style="padding: 1rem; text-align: center; color: gray;"><i class="fas fa-search-minus"></i> কোন মৌজা পাওয়া যায়নি</div>`;
+            return;
+        }
+        let html = '';
+        for (const name of filteredNames) {
+            const entries = mouzaMap.get(name);
+            // determine aggregated status: if any entry has 'অংশ' => 'আংশিক', else 'পূর্ণ'
+            let hasPartial = entries.some(e => e.status === 'অংশ');
+            let aggStatus = hasPartial ? 'আংশিক' : 'পূর্ণ';
+            let badgeClass = hasPartial ? 'badge-partial' : 'badge-full';
+            html += `
+                <div class="mouza-item" data-mouza="${escapeHtml(name)}">
+                    <span class="mouza-name">${escapeHtml(name)}</span>
+                    <span class="status-badge-small ${badgeClass}">${aggStatus}</span>
+                </div>
+            `;
+        }
+        mouzaListContainer.innerHTML = html;
+        // attach click handlers
+        document.querySelectorAll('.mouza-item').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const mouza = el.getAttribute('data-mouza');
+                if (mouza) showMouzaDetailsInModal(mouza);
+            });
+        });
+    }
+
+    // ---------- Load JSON via Fetch API ----------
     async function loadMouzaData() {
         try {
-            statusArea.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> সংযোগ স্থাপন করা হচ্ছে... mouza.json ফাইল পড়া হচ্ছে।`;
+            statusArea.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> mouza.json ফাইল থেকে ডাটা আনতে হচ্ছে...`;
             const response = await fetch('mouza.json');
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ফাইলটি পাওয়া যায়নি। নিশ্চিত করুন যে mouza.json একই ফোল্ডারে আছে।`);
-            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}: ফাইল পাওয়া যায়নি। নিশ্চিত করুন mouza.json একই ফোল্ডারে আছে।`);
             const jsonData = await response.json();
-
-            // Validate basic structure
             if (!jsonData.RAJUK_Zonal_Database || !Array.isArray(jsonData.RAJUK_Zonal_Database)) {
                 throw new Error('JSON ফাইলের গঠন সঠিক নয়। RAJUK_Zonal_Database অ্যারে প্রয়োজন।');
             }
 
-            // Flatten all mouza entries
+            // Flatten entries
             const entries = [];
             for (const zone of jsonData.RAJUK_Zonal_Database) {
                 const zoneNo = zone.zone_no || '?';
@@ -460,46 +530,30 @@
                     }
                 }
             }
+            if (entries.length === 0) throw new Error('JSON ফাইলে কোনো মৌজা এন্ট্রি নেই।');
 
-            if (entries.length === 0) {
-                throw new Error('JSON ফাইলে কোনো মৌজা এন্ট্রি পাওয়া যায়নি।');
-            }
-
-            // Build map: mouza_name -> list of entries (preserve all occurrences)
             mouzaMap.clear();
             for (const entry of entries) {
                 const name = entry.mouza_name;
                 if (!mouzaMap.has(name)) mouzaMap.set(name, []);
                 mouzaMap.get(name).push(entry);
             }
-
-            // Create sorted unique list for suggestions
-            uniqueMouzaList = Array.from(mouzaMap.keys()).sort((a, b) => a.localeCompare(b, 'bn'));
-
+            uniqueMouzaList = Array.from(mouzaMap.keys()).sort((a,b) => a.localeCompare(b, 'bn'));
             dataLoaded = true;
             searchInput.disabled = false;
             searchInput.placeholder = "যেমন: জোয়ারসাহারা, আব্দুল্লাহপুর, টঙ্গী ...";
-            statusArea.innerHTML = `
-                <i class="fas fa-check-circle" style="color:#2b9a7a;"></i> 
-                <strong>সফলভাবে লোড হয়েছে!</strong> মোট ${entries.length}টি মৌজা এন্ট্রি (${uniqueMouzaList.length}টি অনন্য মৌজা নাম) পাওয়া গেছে। 
-                এখন বাংলায় মৌজা নাম টাইপ করে সার্চ করুন।
-            `;
+            statusArea.innerHTML = `<i class="fas fa-check-circle" style="color:#2b9a7a;"></i> <strong>সফল!</strong> মোট ${entries.length}টি মৌজা এন্ট্রি, অনন্য মৌজা ${uniqueMouzaList.length}টি। এখন সার্চ করুন বা সাইডবার থেকে নির্বাচন করুন।`;
+            totalMouzaCountSpan.innerText = uniqueMouzaList.length;
+            renderSidebar(''); // initial full list
         } catch (err) {
             console.error(err);
-            statusArea.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-exclamation-triangle"></i> <strong>ত্রুটি:</strong> ${err.message}<br>
-                    <span style="font-size:0.85rem;">নিশ্চিত করুন যে <strong>mouza.json</strong> ফাইলটি এই HTML ফাইলের সাথে একই ডিরেক্টরিতে আছে এবং JSON এর গঠন সঠিক।</span>
-                </div>
-            `;
+            statusArea.innerHTML = `<div style="color:#b91c1c; background:#fee2e2; padding:0.6rem; border-radius:1rem;"><i class="fas fa-exclamation-triangle"></i> ত্রুটি: ${err.message}<br><span style="font-size:0.75rem;">নিশ্চিত করুন "mouza.json" ফাইলটি এইচটিএমএল ফাইলের সাথে একই ডিরেক্টরিতে আছে এবং JSON সঠিক ফরম্যাটে।</span></div>`;
             searchInput.disabled = true;
-            searchInput.placeholder = "JSON লোড ব্যর্থ, কনসোল দেখুন";
+            mouzaListContainer.innerHTML = `<div style="padding:1rem; color:red;">ডাটা লোড ব্যর্থ, কনসোল দেখুন</div>`;
         }
     }
 
-    // -------------------------------
-    // 4. Search suggestions (Bengali substring match)
-    // -------------------------------
+    // ---------- Search Suggestions (main search bar) ----------
     function showSuggestions(filterText) {
         if (!dataLoaded) return;
         const trimmed = filterText.trim();
@@ -507,7 +561,6 @@
             suggestionsDiv.classList.remove('show');
             return;
         }
-        // Filter mouza names that contain the typed substring (Bengali friendly)
         const filtered = uniqueMouzaList.filter(name => name.includes(trimmed));
         if (filtered.length === 0) {
             suggestionsDiv.classList.remove('show');
@@ -520,104 +573,43 @@
             </div>
         `).join('');
         suggestionsDiv.classList.add('show');
-
-        // Attach click handlers to suggestions
         document.querySelectorAll('.suggestion-item').forEach(el => {
-            el.addEventListener('click', (e) => {
-                const mouzaName = el.getAttribute('data-mouza');
-                searchInput.value = mouzaName;
+            el.addEventListener('click', () => {
+                const mouza = el.getAttribute('data-mouza');
+                searchInput.value = mouza;
                 suggestionsDiv.classList.remove('show');
-                showMouzaDetailsInModal(mouzaName);
+                showMouzaDetailsInModal(mouza);
             });
         });
     }
 
-    // simple escape to prevent XSS
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
-        });
-    }
-
-    // -------------------------------
-    // 5. Display detailed results in modal
-    // -------------------------------
-    function showMouzaDetailsInModal(mouzaName) {
-        if (!dataLoaded) return;
-        const entries = mouzaMap.get(mouzaName);
-        if (!entries || entries.length === 0) {
-            modalBody.innerHTML = `<div class="no-results"><i class="fas fa-exclamation-triangle"></i> "${escapeHtml(mouzaName)}" সম্পর্কে কোনো তথ্য নেই।</div>`;
-            modalMouzaName.innerText = mouzaName;
-            openModal();
-            return;
-        }
-
-        modalMouzaName.innerText = mouzaName;
-        let html = `<div style="margin-bottom:0.8rem;"><i class="fas fa-layer-group"></i> JSON ফাইলের তথ্য অনুযায়ী মোট <strong>${entries.length}</strong>টি সাবজোনে এই মৌজা উপস্থিত।</div>`;
-
-        entries.forEach(entry => {
-            const statusClass = entry.status === 'পূর্ণ' ? 'status-full' : 'status-partial';
-            const statusIcon = entry.status === 'পূর্ণ' ? 'fa-check-circle' : 'fa-adjust';
-            const statusText = entry.status === 'পূর্ণ' ? 'পূর্ণ মৌজা' : 'আংশিক মৌজা';
-
-            html += `
-                <div class="result-card">
-                    <div class="zone-tag">
-                        <i class="fas fa-city"></i> জোন ${escapeHtml(entry.zone_no)} : ${escapeHtml(entry.zone_name)}
-                        <span class="subzone-id">সাবজোন ${escapeHtml(entry.sub_zone_id)}</span>
-                    </div>
-                    <div class="status-badge ${statusClass}">
-                        <i class="fas ${statusIcon}"></i> ${statusText}
-                    </div>
-                    <div class="boundary-box">
-                        <div class="boundary-label"><i class="fas fa-border-all"></i> সাবজোনের চৌহদ্দি (সীমানা)</div>
-                        <div style="font-size:0.85rem; line-height:1.5;">${escapeHtml(entry.boundary)}</div>
-                    </div>
-                </div>
-            `;
-        });
-        modalBody.innerHTML = html;
-        openModal();
-    }
-
-    // -------------------------------
-    // 6. Event listeners for search input
-    // -------------------------------
+    // Debounce & event handlers
     let debounceTimer;
     searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
-        const val = e.target.value;
-        debounceTimer = setTimeout(() => showSuggestions(val), 150);
+        debounceTimer = setTimeout(() => showSuggestions(e.target.value), 150);
     });
-
-    // Hide suggestions when clicking outside
     document.addEventListener('click', (e) => {
         if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
             suggestionsDiv.classList.remove('show');
         }
     });
-
-    // Enter key: if exact match exists, show details
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             const val = searchInput.value.trim();
             if (val && mouzaMap.has(val)) {
                 suggestionsDiv.classList.remove('show');
                 showMouzaDetailsInModal(val);
-            } else if (val) {
-                alert('মৌজা নামটি তালিকায় নেই। সাজেশন থেকে নির্বাচন করুন অথবা সঠিক বানান লিখুন।');
-            }
+            } else if (val) alert('মৌজা নামটি তালিকায় নেই। সাইডবার থেকে নির্বাচন করুন অথবা সঠিক বানান লিখুন।');
         }
     });
 
-    // -------------------------------
-    // 7. Start the app: load JSON
-    // -------------------------------
+    // Sidebar filter
+    sidebarSearch.addEventListener('input', (e) => {
+        if (dataLoaded) renderSidebar(e.target.value);
+    });
+
+    // Start everything
     loadMouzaData();
 </script>
 </body>
