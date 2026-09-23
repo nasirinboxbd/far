@@ -530,7 +530,7 @@ footer.note{
           </div>
           <div class="field-grid">
             <div class="field">
-              <label>প্লট আয়তন (কাঠা)</label>
+              <label>প্রস্তাবিত রাস্তার জন্য সমর্পিত জায়গা বাদে জমির পরিমাণ(কাঠা)</label>
               <input id="plotKatha" type="number" step="0.01" placeholder="যেমন: 5">
             </div>
             <div class="field">
@@ -1055,7 +1055,7 @@ function calculateBonus() {
 
     const surrSqft = +document.getElementById('surrenderedLand').value || 0;
     const surrKatha = surrSqft / KATHA_TO_SQFT;
-    const netPlotKatha = plotK - surrKatha;
+    const netPlotKatha = plotK;
     const netPlotSqft = netPlotKatha * KATHA_TO_SQFT;
 
     if (netPlotKatha <= 0) {
