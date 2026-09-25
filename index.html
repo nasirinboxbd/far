@@ -793,10 +793,263 @@ footer.note{color:#4d6158}
   .tab-btn{font-size:.62rem}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* ================= SPLASH SCREEN ================= */
+
+#splashScreen{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at top right,#15a46b55,transparent 35%),
+      radial-gradient(circle at bottom left,#ffd56a40,transparent 35%),
+      linear-gradient(135deg,#03392c,#046a4e,#067a5a);
+    transition:opacity .8s ease, visibility .8s ease;
+}
+
+#splashScreen.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+#splashScreen::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background-image:
+      radial-gradient(circle,rgba(255,255,255,.08) 2px,transparent 2px);
+    background-size:90px 90px;
+    animation:floatBg 18s linear infinite;
+}
+
+@keyframes floatBg{
+    from{transform:translate(0,0);}
+    to{transform:translate(-120px,-80px);}
+}
+
+.splash-content{
+    position:relative;
+    text-align:center;
+    color:white;
+    padding:30px;
+    max-width:420px;
+}
+
+.splash-logo{
+    width:110px;
+    height:110px;
+    margin:auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:52px;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(12px);
+    border:2px solid rgba(255,255,255,.25);
+    animation:pulse 2s infinite;
+    box-shadow:0 0 40px rgba(255,215,100,.3);
+}
+
+@keyframes pulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+}
+
+.splash-content h1{
+    margin-top:22px;
+    margin-bottom:8px;
+    font-size:32px;
+    font-weight:800;
+}
+
+.splash-content p{
+    color:#d7f7eb;
+    margin-bottom:30px;
+    font-size:15px;
+}
+
+.loader-ring{
+    position:relative;
+    width:130px;
+    height:130px;
+    margin:auto;
+}
+
+.loader-ring svg{
+    transform:rotate(-90deg);
+}
+
+.loader-ring circle{
+    fill:none;
+    stroke-width:8;
+}
+
+.loader-ring circle:first-child{
+    stroke:rgba(255,255,255,.15);
+}
+
+#progressCircle{
+    stroke:#ffd25d;
+    stroke-linecap:round;
+    stroke-dasharray:352;
+    stroke-dashoffset:352;
+    transition:stroke-dashoffset .15s linear;
+}
+
+.loader-ring span{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+    font-weight:700;
+}
+
+.loading-text{
+    margin-top:22px;
+    font-size:15px;
+    letter-spacing:.5px;
+    animation:blink 1.4s infinite;
+}
+
+@keyframes blink{
+    0%,100%{opacity:1;}
+    50%{opacity:.5;}
+}
+
+.loading-bar{
+    width:100%;
+    height:7px;
+    margin-top:18px;
+    border-radius:30px;
+    background:rgba(255,255,255,.18);
+    overflow:hidden;
+}
+
+.loading-fill{
+    width:0%;
+    height:100%;
+    border-radius:30px;
+    background:linear-gradient(90deg,#FFD54F,#FFF176,#FFD54F);
+    box-shadow:0 0 12px rgba(255,213,79,.7);
+    transition:width .15s linear;
+}
+
+@media(max-width:600px){
+    .splash-content h1{
+        font-size:24px;
+    }
+
+    .splash-logo{
+        width:90px;
+        height:90px;
+        font-size:44px;
+    }
+}
+
+
+/* ===== Visitor Counter ===== */
+
+.visit-counter{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    background:rgba(255,255,255,.18);
+    color:#fff;
+
+    padding:8px 14px;
+    border-radius:999px;
+
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.25);
+
+    font-weight:700;
+    font-size:15px;
+
+    box-shadow:0 6px 20px rgba(0,0,0,.18);
+    transition:.3s;
+}
+
+.visit-counter:hover{
+    transform:translateY(-2px);
+    background:rgba(255,255,255,.28);
+}
+
+.visit-counter i{
+    color:#FFD54F;
+    font-size:17px;
+}
+
+#visitCount{
+    font-family:"JetBrains Mono", monospace;
+    letter-spacing:.5px;
+}
+
+/* Mobile */
+@media(max-width:640px){
+
+    .visit-counter{
+        padding:6px 10px;
+        font-size:13px;
+        gap:6px;
+    }
+
+    .visit-counter i{
+        font-size:14px;
+    }
+}
+
+#visitCount{
+    font-family: "JetBrains Mono", monospace;
+    transition: transform .3s ease;
+}
+
+#visitCount.pop{
+    transform: scale(1.2);
+}
 </style>
 
 </head>
 <body>
+
+  <!-- ================= SPLASH SCREEN ================= -->
+<div id="splashScreen">
+  <div class="splash-content">
+
+    <div class="splash-logo">
+      <i class="fas fa-drafting-compass"></i>
+    </div>
+
+    <h1>RAJUK FAR Calculator</h1>
+    <p>DAP Gazette 2025 • Building Construction Rules 2025</p>
+
+    <div class="loader-ring">
+      <svg width="130" height="130">
+        <circle cx="65" cy="65" r="56"></circle>
+        <circle cx="65" cy="65" r="56" id="progressCircle"></circle>
+      </svg>
+
+      <span id="loadingPercent">0%</span>
+    </div>
+
+    <div class="loading-text">
+      Loading Calculator Resources...
+    </div>
+
+    <div class="loading-bar">
+      <div class="loading-fill" id="loadingFill"></div>
+    </div>
+
+  </div>
+</div>
 <div class="shell">
 
   <div class="masthead">
@@ -808,6 +1061,10 @@ footer.note{color:#4d6158}
       </div>
     </div>
     <span class="badge mono">DAP · RAJUK</span>
+    <div id="visitCounter" class="visit-counter">
+    <i class="fas fa-eye"></i>
+    <span id="visitCount">0</span>
+</div>
   </div>
 
   <div class="ref-bar">
@@ -2147,5 +2404,100 @@ function rowHighlight(title,value){
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ========== BEAUTIFUL SPLASH SCREEN ========== */
+
+(function(){
+
+    const splash = document.getElementById("splashScreen");
+    const circle = document.getElementById("progressCircle");
+    const percent = document.getElementById("loadingPercent");
+    const fill = document.getElementById("loadingFill");
+
+    const circumference = 352;
+    let value = 0;
+    let finished = false;
+
+    function update(v){
+        percent.textContent = v + "%";
+        fill.style.width = v + "%";
+        circle.style.strokeDashoffset =
+            circumference - (circumference * v / 100);
+    }
+
+    const loader = setInterval(()=>{
+        if(value < 90){
+            value += Math.floor(Math.random()*4)+1;
+            if(value>90) value=90;
+            update(value);
+        }
+    },80);
+
+    function hideSplash(){
+
+        if(finished) return;
+        finished = true;
+
+        clearInterval(loader);
+
+        let final = value;
+
+        const finish = setInterval(()=>{
+
+            final++;
+
+            update(final);
+
+            if(final>=100){
+
+                clearInterval(finish);
+
+                setTimeout(()=>{
+                    splash.classList.add("hide");
+
+                    setTimeout(()=>{
+                        splash.remove();
+                    },900);
+
+                },350);
+            }
+
+        },18);
+    }
+
+    window.addEventListener("load", ()=>{
+        setTimeout(hideSplash, 500);
+    });
+
+    setTimeout(hideSplash, 6000);
+
+})();
+</script>
+<script>
+const COUNTER_KEY = "nasirinboxbd-rajuk-far-calculator-visits";
+const API_BASE = "https://countapi.mileshilliard.com/api/v1";
+
+async function loadVisitorCounter() {
+    const counter = document.getElementById("visitCount");
+
+    try {
+        // Increment by 1 and return updated total
+        const res = await fetch(`${API_BASE}/hit/${COUNTER_KEY}`);
+        const data = await res.json();
+
+        counter.textContent = Number(data.value).toLocaleString("en-US");
+
+        // Small animation
+        counter.classList.add("pop");
+        setTimeout(() => counter.classList.remove("pop"), 400);
+
+    } catch (err) {
+        console.error("Visitor counter failed:", err);
+        counter.textContent = "--";
+    }
+}
+
+window.addEventListener("load", loadVisitorCounter);
+</script>
 </body>
 </html>
