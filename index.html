@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -1798,10 +1797,11 @@ function toggleA6Option() {
         // Area FAR এর মান 0 হবে
         document.getElementById("areaFarInput").value = 0;
 
-        // A6 অপশন দেখাবে
-        a6OptionWrap.style.display = "block";
+        // A6 টাইপে ইনসেনটিভ FAR-এর A6 অপশন লুকাবে ও মান রিসেট হবে
+        a6OptionWrap.style.display = "none";
+        document.getElementById("a6Option").value = "";
     } else {
-        // অন্যান্য টাইপে Area FAR দেখাবে
+        // অন্যান্য টাইপে Area FAR ও A6 অপশন দেখাবে
         areaFarWrap.style.display = "block";
         a6OptionWrap.style.display = "block";
     }
