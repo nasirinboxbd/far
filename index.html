@@ -353,6 +353,37 @@ footer.note{
 @media(max-width:640px){
   .ref-bar{flex-direction:column;align-items:flex-start}
 }
+
+/* ===== MGC visualization ===== */
+.mgc-viz{margin-top:1.4rem;background:#fff;border:1px solid var(--line);border-radius:20px;padding:1.1rem;box-shadow:var(--shadow-sm)}
+.mgc-viz-head{display:flex;gap:.6rem;align-items:center;font-weight:800;color:var(--ink);font-size:1.02rem;margin-bottom:.25rem}
+.mgc-viz-head i{color:var(--forest)}
+.mgc-viz-sub{font-size:.8rem;color:var(--text-soft);margin-bottom:.9rem;line-height:1.65}
+.viz-chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;margin-bottom:.7rem}
+.viz-chip{background:var(--forest-tint);border:1px solid #bfe3d2;border-radius:14px;padding:.6rem .8rem}
+.viz-chip .k{font-size:.72rem;color:var(--text-soft);font-weight:600}
+.viz-chip .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:var(--forest-dark)}
+.viz-chip.amber{background:var(--amber-tint);border-color:#ecd39c}
+.viz-chip.amber .v{color:var(--amber)}
+.viz-delta{display:none;font-size:.8rem;font-weight:600;line-height:1.6;padding:.5rem .8rem;border-radius:12px;background:#f1f5f9;color:var(--ink);margin-bottom:.8rem}
+.viz-delta.show{display:block}
+.viz-delta .up{color:var(--forest-dark)} .viz-delta .down{color:var(--danger)}
+.viz-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem}
+.viz-panel{border:1px solid var(--line);border-radius:16px;padding:.7rem;background:#fbfdfc}
+.viz-title{font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.3rem}
+.viz-panel svg{width:100%;height:auto;display:block}
+.mgc-viz svg text{font-family:'Noto Sans Bengali','Inter',sans-serif}
+.viz-cap{font-size:.74rem;color:var(--text-soft);line-height:1.6;margin-top:.3rem}
+.viz-cap .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.viz-table-wrap{overflow-x:auto;margin-top:.8rem}
+.viz-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.viz-table th,.viz-table td{padding:.5rem .6rem;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.viz-table th:first-child,.viz-table td:first-child{text-align:left}
+.viz-table th{color:var(--text-soft);font-weight:700;font-size:.74rem}
+.viz-table td{font-family:'JetBrains Mono',monospace}
+.viz-table td:first-child{font-family:'Noto Sans Bengali','Inter',sans-serif;font-weight:600}
+.viz-table tr.hi td{background:var(--forest-tint);font-weight:700;color:var(--forest-dark)}
+@media(max-width:700px){.viz-grid{grid-template-columns:1fr}}
 </style>
 <style>
 /* ---------- Steps (calculator) ---------- */
@@ -1304,6 +1335,30 @@ footer.note{color:#4d6158}
             <div class="unit">গ্রাউন্ড ফ্লোর + অতিরিক্ত তলা</div>
           </div>
 
+          <div class="mgc-viz" id="mgcViz">
+            <div class="mgc-viz-head"><i class="fas fa-chart-area"></i> MGC পরিবর্তনে তলা ও মেঝের ক্ষেত্রফল — চিত্রে দেখুন</div>
+            <div class="mgc-viz-sub">MGC স্লাইডার টানলে নিচের চিত্রগুলো সাথে সাথে বদলাবে। মোট অনুমোদিত মেঝের ক্ষেত্রফল একই থাকে; MGC বাড়লে প্রতি তলার ক্ষেত্রফল বাড়ে ও তলা সংখ্যা কমে, MGC কমলে উল্টোটা হয়।</div>
+            <div class="viz-chips" id="vizChips"></div>
+            <div class="viz-delta" id="vizDelta"></div>
+            <div class="viz-grid">
+              <div class="viz-panel">
+                <div class="viz-title"><i class="fas fa-border-all"></i> সাইট প্ল্যান (উপর থেকে দেখা)</div>
+                <svg id="vizPlan" viewBox="0 0 320 220" role="img" aria-label="সাইট প্ল্যান"></svg>
+                <div class="viz-cap" id="vizPlanCap"></div>
+              </div>
+              <div class="viz-panel">
+                <div class="viz-title"><i class="fas fa-building"></i> ভবনের তলা (সামনের দিক)</div>
+                <svg id="vizElev" viewBox="0 0 320 250" role="img" aria-label="ভবনের তলা"></svg>
+                <div class="viz-cap" id="vizElevCap"></div>
+              </div>
+            </div>
+            <div class="viz-panel">
+              <div class="viz-title"><i class="fas fa-chart-line"></i> MGC বনাম তলা সংখ্যা ও প্রতি তলার ক্ষেত্রফল</div>
+              <svg id="vizTrend" viewBox="0 0 660 280" role="img" aria-label="MGC বনাম তলা"></svg>
+            </div>
+            <div class="viz-table-wrap"><table class="viz-table" id="vizTable"></table></div>
+          </div>
+
           <div class="stat-grid">
             <div class="stat-card"><div class="k">অনুমোদিত FAR</div><div class="v" id="bonusApprovedFar">0.000</div></div>
             <div class="stat-card"><div class="k">প্লট আয়তন (কাঠা)</div><div class="v" id="bonusPlotKatha">0.00</div></div>
@@ -2000,8 +2055,203 @@ function calculateBonus() {
     document.getElementById('totalFloorsDisplay').textContent =
         'G+' + Math.max(totalFloors - 1, 0);
 
+    // MGC অনুযায়ী চিত্র হালনাগাদ
+    try {
+        const lim = getMGC(type.value, netPlotKatha);
+        renderMGCViz({
+            plot: netPlotSqft,
+            total: totalFloorArea,
+            cur: +mgcSlider.value,
+            limMin: lim.minMGC,
+            limMax: (lim.maxMGC === null) ? 75 : lim.maxMGC
+        });
+    } catch (e) { console.error('MGC viz error:', e); }
+
     resultBox.classList.add('show');
 }
+
+/* =========================================================
+   MGC ভিজ্যুয়ালাইজেশন — সাইট প্ল্যান, তলার চিত্র ও ট্রেন্ড চার্ট
+   ========================================================= */
+let _vizPrev = null;
+
+function vizNiceStep(v, opts){
+    if (!(v > 0)) return 1;
+    opts = opts || [1,2,2.5,5,10];
+    const pow = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const o of opts){ if (o * pow >= v - 1e-12) return o * pow; }
+    return 10 * pow;
+}
+
+function renderMGCViz(o){
+    const plot = o.plot, total = o.total, cur = o.cur;
+    const limMin = o.limMin, limMax = o.limMax;
+    const f0 = n => Math.round(n).toLocaleString('en-US');
+    const floorsAt = m => Math.ceil(total / ((m / 100) * plot));
+
+    const n = floorsAt(cur);
+    const foot = (cur / 100) * plot;                 // প্রতি তলার ক্ষেত্রফল (ফুটপ্রিন্ট)
+    const open = plot - foot;                        // খোলা জায়গা
+    const topArea = total - (n - 1) * foot;          // উপরের তলার ক্ষেত্রফল
+    const frac = Math.min(Math.max(topArea / foot, 0), 1);
+    const sq = Math.sqrt(cur / 100);
+
+    // চার্টের ন্যূনতম MGC: সীমা না থাকলে অতি ছোট মান বাদ দিয়ে বাস্তবসম্মত পরিসর
+    let baseMin = limMin >= 5 ? limMin : Math.min(Math.max(limMin, 10), limMax);
+    const x0 = Math.min(baseMin, cur), x1 = Math.max(limMax, cur);
+
+    /* ---------- তথ্য কার্ড ---------- */
+    document.getElementById('vizChips').innerHTML =
+        '<div class="viz-chip"><div class="k">প্রতি তলার ক্ষেত্রফল (বর্গফুট)</div><div class="v">' + f0(foot) + '</div></div>' +
+        '<div class="viz-chip amber"><div class="k">খোলা জায়গা (বর্গফুট)</div><div class="v">' + f0(open) + '</div></div>' +
+        '<div class="viz-chip"><div class="k">মোট তলা সংখ্যা</div><div class="v">' + n + ' (G+' + Math.max(n - 1, 0) + ')</div></div>' +
+        '<div class="viz-chip"><div class="k">উপরের তলার ক্ষেত্রফল (বর্গফুট)</div><div class="v">' + f0(topArea) + '</div></div>';
+
+    /* ---------- আগের অবস্থার সাথে পরিবর্তন ---------- */
+    const key = Math.round(plot) + '|' + Math.round(total);
+    const dEl = document.getElementById('vizDelta');
+    if (_vizPrev && _vizPrev.key === key && _vizPrev.cur !== cur){
+        const dm = cur - _vizPrev.cur, df = foot - _vizPrev.foot, dn = n - _vizPrev.n;
+        const sg = v => (v > 0 ? '+' : v < 0 ? '−' : '');
+        dEl.innerHTML = 'MGC <b>' + _vizPrev.cur + '% → ' + cur + '%</b> (' + sg(dm) + Math.abs(dm).toFixed(1).replace(/\.0$/, '') + '%) · ' +
+            'প্রতি তলা <b class="' + (df >= 0 ? 'up' : 'down') + '">' + sg(df) + f0(Math.abs(df)) + ' বর্গফুট</b> · ' +
+            'তলা সংখ্যা <b class="' + (dn <= 0 ? 'up' : 'down') + '">' + (dn === 0 ? 'অপরিবর্তিত' : sg(dn) + Math.abs(dn) + ' তলা') + '</b>';
+        dEl.classList.add('show');
+    } else if (!_vizPrev || _vizPrev.key !== key){
+        dEl.classList.remove('show');
+    }
+    _vizPrev = { key: key, cur: cur, foot: foot, n: n };
+
+    /* ---------- ১) সাইট প্ল্যান ---------- */
+    const PX = 30, PY = 14, PW = 260, PH = 160;
+    const rectAt = (m, extra) => {
+        const k = Math.sqrt(m / 100), w = PW * k, h = PH * k;
+        return '<rect x="' + (PX + (PW - w) / 2) + '" y="' + (PY + (PH - h) / 2) + '" width="' + w + '" height="' + h + '" ' + extra + '/>';
+    };
+    const fw = PW * sq, fh2 = PH * sq;
+    let plan = '<defs><pattern id="vizHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
+        '<rect width="8" height="8" fill="#f6efe0"/><line x1="0" y1="0" x2="0" y2="8" stroke="#e4d3a8" stroke-width="2"/></pattern></defs>';
+    plan += '<rect x="' + PX + '" y="' + PY + '" width="' + PW + '" height="' + PH + '" fill="url(#vizHatch)" stroke="#0b2036" stroke-width="1.6"/>';
+    if (limMax > cur) plan += rectAt(limMax, 'fill="none" stroke="#b8790d" stroke-width="1.3" stroke-dasharray="5 4"');
+    if (limMin > 0 && limMin < cur) plan += rectAt(limMin, 'fill="none" stroke="#54655d" stroke-width="1.2" stroke-dasharray="2 3"');
+    plan += rectAt(cur, 'fill="#067a5a" fill-opacity="0.9" stroke="#034c38" stroke-width="1.6"');
+    const pcx = PX + PW / 2, pcy = PY + PH / 2;
+    if (fw > 54 && fh2 > 26){
+        plan += '<text x="' + pcx + '" y="' + (pcy + (fh2 > 46 ? -2 : 5)) + '" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">' + cur + '%</text>';
+        if (fh2 > 46 && fw > 100) plan += '<text x="' + pcx + '" y="' + (pcy + 15) + '" text-anchor="middle" font-size="10.5" fill="#e6f6ef">' + f0(foot) + ' বর্গফুট</text>';
+    }
+    plan += '<text x="' + pcx + '" y="' + (PY + PH + 20) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#16241f">প্লট: ' + f0(plot) + ' বর্গফুট (100%)</text>';
+    document.getElementById('vizPlan').innerHTML = plan;
+    document.getElementById('vizPlanCap').innerHTML =
+        '<span class="sw" style="background:#067a5a"></span>ভবনের ফুটপ্রিন্ট ' + cur + '% &nbsp; ' +
+        '<span class="sw" style="background:#e4d3a8"></span>খোলা জায়গা ' + (100 - cur).toFixed(1).replace(/\.0$/, '') + '%' +
+        (limMax > cur ? ' &nbsp; <span class="sw" style="border:1.5px dashed #b8790d"></span>সর্বোচ্চ MGC ' + limMax + '%' : '');
+
+    /* ---------- ২) তলার চিত্র ---------- */
+    const base = 222, maxH = 182, cx = 135;
+    const maxF = Math.max(floorsAt(x0), n);
+    const fhgt = Math.min(24, maxH / maxF);
+    const bw = Math.max(36, 190 * sq);
+    let el = '';
+    const labelEvery = Math.max(1, Math.ceil(11 / fhgt));
+    for (let i = 0; i < n; i++){
+        const last = (i === n - 1);
+        const partial = last && frac < 0.995;
+        const w = partial ? Math.max(bw * frac, 14) : bw;
+        const x = cx - w / 2, y = base - (i + 1) * fhgt;
+        const fill = i === 0 ? '#034c38' : (partial && n > 1 ? '#d9a441' : (i % 2 ? '#0a8a65' : '#067a5a'));
+        el += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + fhgt.toFixed(1) + '" fill="' + fill + '" stroke="#fff" stroke-width="1"/>';
+        if (fhgt >= 12 && n <= 40){
+            const cols = Math.max(2, Math.floor(w / 26));
+            const gap = w / (cols + 1);
+            for (let c = 1; c <= cols; c++){
+                el += '<rect x="' + (x + gap * c - 4).toFixed(1) + '" y="' + (y + fhgt * 0.28).toFixed(1) + '" width="8" height="' + (fhgt * 0.44).toFixed(1) + '" fill="#fff" fill-opacity="0.35"/>';
+            }
+        }
+        if (i % labelEvery === 0 || last){
+            const lbl = i === 0 ? 'G' : String(i);
+            el += '<line x1="' + (cx + w / 2 + 3).toFixed(1) + '" y1="' + (y + fhgt / 2).toFixed(1) + '" x2="246" y2="' + (y + fhgt / 2).toFixed(1) + '" stroke="#cfd9d4" stroke-dasharray="2 3"/>';
+            el += '<text x="252" y="' + (y + fhgt / 2 + 3.5).toFixed(1) + '" font-size="10" font-weight="700" fill="#16241f">' + lbl + (last ? ' ▸ ' + f0(topArea) : '') + '</text>';
+        }
+    }
+    el += '<rect x="14" y="' + base + '" width="292" height="9" fill="#e5dccb"/><line x1="14" y1="' + base + '" x2="306" y2="' + base + '" stroke="#0b2036" stroke-width="1.6"/>';
+    el += '<text x="' + cx + '" y="' + (base - n * fhgt - 8).toFixed(1) + '" text-anchor="middle" font-size="14" font-weight="800" fill="#0b2036">' + (n > 1 ? 'G+' + (n - 1) : 'G') + ' · ' + n + ' তলা</text>';
+    document.getElementById('vizElev').innerHTML = el;
+    document.getElementById('vizElevCap').innerHTML =
+        'প্রতিটি ব্লক = ১টি তলা (সমান স্কেলে)।' + (n > 1 && frac < 0.995 ? ' <span class="sw" style="background:#d9a441"></span>উপরের তলা আংশিক (' + Math.round(frac * 100) + '%)।' : '') +
+        ' ডানে তলা নং ও (উপরের তলার) ক্ষেত্রফল।';
+
+    /* ---------- ৩) ট্রেন্ড চার্ট ---------- */
+    const W = 660, H = 280, L = 52, R = 58, T = 36, B = 44;
+    const iw = W - L - R, ih = H - T - B;
+    const span = Math.max(x1 - x0, 0.5);
+    const xp = m => L + ((m - x0) / span) * iw;
+    const maxFl = floorsAt(x0);
+    let lStep = Math.max(1, vizNiceStep(maxFl / 4, [1,2,5,10]));
+    let tks = Math.max(2, Math.ceil(maxFl / lStep));
+    const leftMax = tks * lStep;
+    const footMax = plot * x1 / 100;
+    const rStep = vizNiceStep(footMax / tks, [1,2,2.5,5,10]);
+    const rightMax = rStep * tks;
+    const yL = v => T + ih - (v / leftMax) * ih;
+    const yR = v => T + ih - (v / rightMax) * ih;
+
+    let ch = '';
+    for (let t = 0; t <= tks; t++){
+        const yy = T + ih - (t / tks) * ih;
+        ch += '<line x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy + '" stroke="#e3ebe7"/>';
+        ch += '<text x="' + (L - 7) + '" y="' + (yy + 3.5) + '" text-anchor="end" font-size="10" fill="#067a5a" font-weight="700">' + f0(t * lStep) + '</text>';
+        ch += '<text x="' + (W - R + 7) + '" y="' + (yy + 3.5) + '" font-size="10" fill="#b8790d" font-weight="700">' + f0(t * rStep) + '</text>';
+    }
+    const xs = vizNiceStep(span / 8, [1,2,5,10]);
+    for (let m = Math.ceil(x0 / xs) * xs; m <= x1 + 1e-9; m += xs){
+        ch += '<line x1="' + xp(m) + '" y1="' + (T + ih) + '" x2="' + xp(m) + '" y2="' + (T + ih + 4) + '" stroke="#54655d"/>';
+        ch += '<text x="' + xp(m) + '" y="' + (T + ih + 16) + '" text-anchor="middle" font-size="10" fill="#54655d">' + (+m.toFixed(2)) + '%</text>';
+    }
+    ch += '<line x1="' + L + '" y1="' + (T + ih) + '" x2="' + (W - R) + '" y2="' + (T + ih) + '" stroke="#54655d"/>';
+
+    const pts = [];
+    for (let m = x0; m <= x1 + 1e-9; m += 0.25) pts.push(m);
+    if (pts[pts.length - 1] < x1) pts.push(x1);
+    let sp = 'M' + xp(pts[0]).toFixed(1) + ' ' + yL(floorsAt(pts[0])).toFixed(1);
+    for (let i = 1; i < pts.length; i++){
+        sp += ' H' + xp(pts[i]).toFixed(1) + ' V' + yL(floorsAt(pts[i])).toFixed(1);
+    }
+    const area = sp + ' L' + xp(pts[pts.length - 1]).toFixed(1) + ' ' + (T + ih) + ' L' + xp(pts[0]).toFixed(1) + ' ' + (T + ih) + ' Z';
+    ch += '<path d="' + area + '" fill="#067a5a" fill-opacity="0.12"/>';
+    ch += '<path d="' + sp + '" fill="none" stroke="#067a5a" stroke-width="2.2" stroke-linejoin="round"/>';
+    ch += '<polyline fill="none" stroke="#b8790d" stroke-width="2.2" points="' +
+        pts.map(m => xp(m).toFixed(1) + ',' + yR((m / 100) * plot).toFixed(1)).join(' ') + '"/>';
+
+    const mx = xp(cur), fy = yL(n), ay = yR(foot);
+    ch += '<line x1="' + mx + '" y1="' + T + '" x2="' + mx + '" y2="' + (T + ih) + '" stroke="#0b2036" stroke-dasharray="4 3" stroke-width="1.3"/>';
+    ch += '<circle cx="' + mx + '" cy="' + fy + '" r="5.5" fill="#067a5a" stroke="#fff" stroke-width="2"/>';
+    ch += '<circle cx="' + mx + '" cy="' + ay + '" r="5.5" fill="#b8790d" stroke="#fff" stroke-width="2"/>';
+    const bwid = 200, bx = (mx > L + iw * 0.55) ? mx - bwid - 10 : mx + 10, by = T + 4;
+    ch += '<rect x="' + bx + '" y="' + by + '" width="' + bwid + '" height="38" rx="8" fill="#fff" fill-opacity="0.96" stroke="#067a5a"/>';
+    ch += '<text x="' + (bx + 10) + '" y="' + (by + 16) + '" font-size="11.5" font-weight="800" fill="#0b2036">MGC ' + cur + '% → ' + n + ' তলা</text>';
+    ch += '<text x="' + (bx + 10) + '" y="' + (by + 31) + '" font-size="10.5" fill="#54655d">প্রতি তলা ' + f0(foot) + ' বর্গফুট</text>';
+
+    ch += '<rect x="' + L + '" y="10" width="14" height="4" fill="#067a5a"/><text x="' + (L + 19) + '" y="15" font-size="10.5" fill="#16241f">তলা সংখ্যা (বাম অক্ষ)</text>';
+    ch += '<rect x="' + (L + 150) + '" y="10" width="14" height="4" fill="#b8790d"/><text x="' + (L + 169) + '" y="15" font-size="10.5" fill="#16241f">প্রতি তলার ক্ষেত্রফল, বর্গফুট (ডান অক্ষ)</text>';
+    ch += '<text x="' + (L + iw / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#16241f">MGC (%)</text>';
+    ch += '<text transform="rotate(-90 12 ' + (T + ih / 2) + ')" x="12" y="' + (T + ih / 2) + '" text-anchor="middle" font-size="10.5" fill="#067a5a" font-weight="600">তলা সংখ্যা</text>';
+    document.getElementById('vizTrend').innerHTML = ch;
+
+    /* ---------- তুলনামূলক টেবিল ---------- */
+    const rows = [];
+    if (limMin > 0 && limMin !== cur) rows.push({ l: 'সর্বনিম্ন MGC সীমা', m: limMin });
+    rows.push({ l: 'বর্তমান নির্বাচিত', m: cur, hi: true });
+    if (limMax !== cur) rows.push({ l: 'সর্বোচ্চ MGC সীমা', m: limMax });
+    let tb = '<thead><tr><th>অবস্থা</th><th>MGC</th><th>প্রতি তলার ক্ষেত্রফল (বর্গফুট)</th><th>খোলা জায়গা (বর্গফুট)</th><th>তলা সংখ্যা</th></tr></thead><tbody>';
+    rows.forEach(r => {
+        const ft = (r.m / 100) * plot, nn = floorsAt(r.m);
+        tb += '<tr' + (r.hi ? ' class="hi"' : '') + '><td>' + r.l + '</td><td>' + r.m + '%</td><td>' + f0(ft) + '</td><td>' + f0(plot - ft) + '</td><td>' + nn + ' (G+' + Math.max(nn - 1, 0) + ')</td></tr>';
+    });
+    tb += '</tbody>';
+    document.getElementById('vizTable').innerHTML = tb;
+}
+
 /* =========================================================
    PART C — মৌজা → সাবজোন লুকআপ (mouza.html-এর লজিক, embedded JSON থেকে)
    ========================================================= */
