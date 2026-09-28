@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -1065,6 +1064,127 @@ footer.note{color:#4d6158}
 }
 </style>
 
+
+<style id="responsive-plus">
+/* ===== Reference buttons ===== */
+button.ref-btn{cursor:pointer;font-family:'Noto Sans Bengali','Inter',sans-serif}
+.ref-btn.ref-map{border-color:var(--forest);color:var(--forest-dark)}
+.ref-btn.ref-map:hover{background:var(--forest);color:#fff}
+.ref-btn.ref-manual{background:linear-gradient(135deg,var(--forest),var(--forest-dark));border-color:var(--forest-dark);color:#fff}
+.ref-btn.ref-manual:hover{filter:brightness(1.1);background:linear-gradient(135deg,var(--forest),var(--forest-dark))}
+.ref-btn .ext{font-size:.68rem;opacity:.75}
+
+/* ===== User manual ===== */
+.man-body{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.man-hero{display:flex;gap:.9rem;align-items:flex-start;background:linear-gradient(135deg,var(--forest-tint),#fff);border:1px solid #bfe3d2;border-radius:18px;padding:1rem 1.1rem;margin-bottom:1.2rem}
+.man-hero-ic{flex:0 0 46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--forest),var(--forest-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.man-hero b{color:var(--ink);font-size:1.02rem}
+.man-hero p{margin:.25rem 0 0;font-size:.86rem;color:var(--text-soft);line-height:1.7}
+.man-h{display:flex;align-items:center;gap:.5rem;margin:1.4rem 0 .7rem;font-size:1rem;color:var(--ink)}
+.man-h i{color:var(--forest)}
+.man-quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.7rem}
+.man-q{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:.9rem .9rem .9rem 3.1rem;box-shadow:var(--shadow-sm)}
+.man-q span{position:absolute;left:.8rem;top:.85rem;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--forest),var(--forest-dark));color:#fff;font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center}
+.man-q b{display:block;color:var(--ink);font-size:.92rem}
+.man-q p{margin:.2rem 0 0;font-size:.79rem;color:var(--text-soft);line-height:1.65}
+details.man-item{border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:.55rem;overflow:hidden}
+details.man-item[open]{border-color:#bfe3d2;box-shadow:var(--shadow-sm)}
+details.man-item>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;font-weight:700;font-size:.92rem;color:var(--ink);min-height:48px}
+details.man-item>summary::-webkit-details-marker{display:none}
+details.man-item>summary::after{content:"\f078";font-family:"Font Awesome 6 Free";font-weight:900;margin-left:auto;font-size:.7rem;color:var(--text-soft);transition:transform .2s}
+details.man-item[open]>summary::after{transform:rotate(180deg)}
+details.man-item>summary i{color:var(--forest);width:1.1rem;text-align:center}
+details.man-item>summary em{font-style:normal;font-weight:600;font-size:.72rem;color:var(--forest-dark);background:var(--forest-tint);border-radius:999px;padding:.12rem .55rem}
+.man-in{padding:0 1rem 1rem;font-size:.85rem;line-height:1.75;color:var(--text)}
+.man-in p{margin:.1rem 0 .6rem}
+.man-in ul{margin:.2rem 0 .7rem;padding-left:1.15rem}
+.man-in li{margin-bottom:.3rem}
+.man-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.3rem 0 .8rem;border:1px solid var(--line);border-radius:12px}
+.man-table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:440px}
+.man-table th,.man-table td{padding:.55rem .7rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.man-table th{background:#f2f7f4;color:var(--text-soft);font-size:.74rem}
+.man-table td:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
+.man-table tr:last-child td{border-bottom:none}
+.man-go{border:1.5px solid var(--forest);background:#fff;color:var(--forest-dark);font-family:'Noto Sans Bengali','Inter',sans-serif;font-weight:700;font-size:.8rem;padding:.5rem .9rem;border-radius:10px;cursor:pointer;min-height:40px}
+.man-go:hover{background:var(--forest);color:#fff}
+.man-gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.55rem}
+.man-gloss div{background:#f7fbf9;border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem}
+.man-gloss b{display:block;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--forest-dark)}
+.man-gloss span{font-size:.79rem;color:var(--text-soft);line-height:1.6}
+.man-warn{display:flex;gap:.7rem;align-items:flex-start;background:var(--amber-tint);border:1px solid #f0dba8;border-radius:14px;padding:.8rem 1rem;margin-top:1.1rem;color:#7a4e08}
+.man-warn i{margin-top:.2rem}
+.man-warn p{margin:0;font-size:.8rem;line-height:1.7;font-weight:500}
+
+/* ===== Global responsive foundation ===== */
+html,body{max-width:100%;overflow-x:hidden}
+img,svg,video,canvas,iframe{max-width:100%}
+.shell{width:100%}
+.brand>div{min-width:0}
+.brand h1{font-size:clamp(1.08rem,.85rem + 1.4vw,1.6rem)}
+.result-hero .value{font-size:clamp(1.9rem,1.2rem + 4vw,3rem)}
+.field input,.field select{min-height:46px}
+.calc-btn,.ghost-btn{min-height:48px}
+.breakdown,.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.modal-container{max-height:min(88vh,88dvh)}
+.modal-body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.cs-math,.viz-table-wrap{-webkit-overflow-scrolling:touch}
+
+/* Large desktop */
+@media(min-width:1280px){
+  .shell{max-width:1080px}
+  .card-body{padding:2.2rem 2.2rem 2.4rem}
+}
+
+/* Tablet */
+@media(min-width:641px) and (max-width:920px){
+  .tab-btn{font-size:.8rem;padding:.7rem .45rem;gap:.35rem}
+  .tab-btn i{font-size:.85rem}
+  .ref-bar{flex-direction:column;align-items:stretch}
+  .ref-note{max-width:none}
+  .ref-links{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+  .ref-btn{justify-content:center;white-space:normal;text-align:center;min-height:46px}
+  .card-body{padding:1.6rem 1.3rem 1.9rem}
+  .viz-grid{grid-template-columns:1fr 1fr}
+}
+@media(min-width:641px) and (max-width:780px){
+  .ref-links{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Phone */
+@media(max-width:640px){
+  .ref-bar{align-items:stretch;gap:.7rem}
+  .ref-note{font-size:.78rem;max-width:none}
+  .ref-links{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;width:100%}
+  .ref-btn{flex:none;font-size:.76rem;padding:.5rem .55rem;gap:.4rem;line-height:1.35}
+  .ref-btn i.ext{display:none}
+  .calc-btn{width:100%}
+  .cs-math{font-size:.72rem}
+  .modal-container,.modal-container.wide{max-height:min(92vh,92dvh)}
+  .modal-header{padding:.9rem 1rem}
+  .modal-header h3{font-size:1rem}
+  .man-hero{padding:.85rem}
+  .man-hero-ic{flex-basis:40px;height:40px}
+  .man-quick{grid-template-columns:1fr}
+  .man-gloss{grid-template-columns:1fr}
+  details.man-item>summary{padding:.7rem .85rem;font-size:.88rem;flex-wrap:wrap;row-gap:.2rem}
+  .man-in{padding:0 .85rem .9rem}
+  .man-table td:first-child{white-space:normal}
+  .viz-chips{grid-template-columns:1fr 1fr}
+}
+@media(max-width:400px){
+  .ref-links{grid-template-columns:1fr}
+  .tab-btn{font-size:.6rem}
+  .tab-btn i{font-size:1rem}
+  .viz-chips{grid-template-columns:1fr}
+  .cs-step{flex-direction:column}
+}
+/* Landscape phones: keep nav from covering content */
+@media(max-height:460px) and (max-width:900px){
+  .tab-row{position:static!important;box-shadow:none!important;margin-bottom:.8rem!important}
+  body{padding-bottom:1.5rem!important}
+  .modal-container,.modal-container.wide{max-height:94vh}
+}
+</style>
 </head>
 <body>
 
@@ -1127,6 +1247,12 @@ footer.note{color:#4d6158}
       <a class="ref-btn" href="bidhimala-2025.pdf" target="_blank" rel="noopener noreferrer">
         <i class="fas fa-file-pdf"></i> ইমারত নির্মাণ বিধিমালা, ২০২৫
       </a>
+      <a class="ref-btn ref-map" href="https://masterplan.rajuk.gov.bd/" target="_blank" rel="noopener noreferrer" title="রাজউক মাস্টারপ্ল্যান ম্যাপ (নতুন ট্যাবে খুলবে)">
+        <i class="fas fa-map-marked-alt"></i> RAJUK Masterplan <i class="fas fa-external-link-alt ext"></i>
+      </a>
+      <button type="button" class="ref-btn ref-manual" onclick="openManualModal()" title="ওয়েবপেজ ব্যবহারের নির্দেশিকা">
+        <i class="fas fa-book-open"></i> ব্যবহার নির্দেশিকা
+      </button>
     </div>
   </div>
 
@@ -1168,6 +1294,12 @@ footer.note{color:#4d6158}
             <div class="field" id="areaFarFieldWrap">
   <label>এরিয়া FAR <span class="hint">(নিজে লিখতে বা পরিবর্তন করতে পারবেন)</span></label>
   <input id="areaFarInput" type="number" step="0.001" placeholder="যেমন: 3.400">
+  <div id="areaFarA6Hint" class="hint" style="display:none;margin-top:.35rem">টাইপ A6 এর ক্ষেত্রে অনুমোদিত FAR নির্ধারণে Plot FAR-ই ব্যবহৃত হয়; এই মান শুধু তথ্য হিসেবে থাকবে।</div>
+</div>
+            <div class="field" id="unitPerKathaFieldWrap">
+  <label>ইউনিট/কাঠা <span class="hint">(নিজে লিখতে বা পরিবর্তন করতে পারবেন)</span></label>
+  <input id="unitPerKathaInput" type="number" step="0.01" min="0" placeholder="যেমন: 1.9">
+  <div id="unitA6Hint" class="hint" style="display:none;margin-top:.35rem">টাইপ A6 এর ক্ষেত্রে ইউনিট সংখ্যা হিসাব করা হয় না।</div>
 </div>
           </div>
           <button type="button" class="ghost-btn" id="viewBlocksBtn" onclick="openBlocksModal()">
@@ -1436,6 +1568,137 @@ footer.note{color:#4d6158}
   <footer class="note">রাজউক FAR ক্যালকুলেটর ও মৌজা নির্দেশিকা · সকল ডাটা ও লজিক এই ফাইলের মধ্যেই সংরক্ষিত<br>Developed by MD NASIR UDDIN,AAO,RAJUK</footer>
 </div>
 
+<!-- User manual modal -->
+<div id="manualModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="manualTitle">
+  <div class="modal-container wide">
+    <div class="modal-header">
+      <h3 id="manualTitle"><i class="fas fa-book-open"></i>&nbsp; ব্যবহার নির্দেশিকা</h3>
+      <button class="close-modal" onclick="closeManualModal()" aria-label="বন্ধ করুন"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body man-body">
+
+      <div class="man-hero">
+        <div class="man-hero-ic"><i class="fas fa-drafting-compass"></i></div>
+        <div>
+          <b>রাজউক FAR ক্যালকুলেটরে স্বাগতম</b>
+          <p>এই ওয়েবপেজে ড্যাপ গেজেট ২০২৫ ও ইমারত নির্মাণ বিধিমালা ২০২৫ অনুসারে আপনার প্লটের অনুমোদিত FAR, মেঝের ক্ষেত্রফল, তলা সংখ্যা ও ইউনিট সংখ্যা হিসাব করা যায় এবং মৌজা কোন সাবজোনে পড়ে তা জানা যায়।</p>
+        </div>
+      </div>
+
+      <h4 class="man-h"><i class="fas fa-bolt"></i> দ্রুত শুরু — ৪টি ধাপে</h4>
+      <div class="man-quick">
+        <div class="man-q"><span>১</span><b>ব্লক বাছুন</b><p>"FAR ক্যালকুলেটর" ট্যাবে আপনার প্লটের জোনাল ব্লক নির্বাচন করুন। এরিয়া FAR ও ইউনিট/কাঠা নিজে থেকে বসে যাবে।</p></div>
+        <div class="man-q"><span>২</span><b>প্লটের তথ্য দিন</b><p>সাবটাইপ, টাইপ, রাস্তার প্রস্থ (W1) এবং জমির পরিমাণ (কাঠা) দিন।</p></div>
+        <div class="man-q"><span>৩</span><b>FAR হিসাব করুন</b><p>প্রযোজ্য ইনসেনটিভ বেছে নিয়ে "চূড়ান্ত FAR হিসাব করুন" বাটনে চাপ দিন।</p></div>
+        <div class="man-q"><span>৪</span><b>তলা ও ইউনিট দেখুন</b><p>"ইউনিট ও তলা সংখ্যা" ট্যাবে MGC স্লাইডার টেনে তলা সংখ্যা ও ছবি দেখুন।</p></div>
+      </div>
+
+      <h4 class="man-h"><i class="fas fa-layer-group"></i> ট্যাবগুলোর পরিচিতি</h4>
+
+      <details class="man-item" open>
+        <summary><i class="fas fa-ruler-combined"></i> FAR ক্যালকুলেটর <em>মূল হিসাব</em></summary>
+        <div class="man-in">
+          <p>এখানে তিনটি ধাপে তথ্য দিতে হয়: <b>(১) এরিয়া FAR</b>, <b>(২) প্লট FAR</b> ও <b>(৩) ইনসেনটিভ FAR</b>। শেষে বাটনে চাপ দিলে অনুমোদিত FAR, বেস FAR, সর্বোচ্চ FAR ও ইনসেনটিভের বিস্তারিত তালিকা দেখা যাবে।</p>
+          <div class="man-tw"><table class="man-table">
+            <thead><tr><th>ঘর</th><th>কী দেবেন</th></tr></thead>
+            <tbody>
+              <tr><td>ব্লক নির্বাচন</td><td>প্লট যে ব্লকে পড়ে সেটি বাছুন। খুঁজে না পেলে "সকল ব্লকের তালিকা দেখুন" বাটনে সার্চ করে ব্লকে ক্লিক করুন।</td></tr>
+              <tr><td>এরিয়া FAR ও ইউনিট/কাঠা</td><td>ব্লক বাছলে স্বয়ংক্রিয়ভাবে বসে। চাইলে নিজে লিখে বদলানো যায়, ব্লক না বেছেও সরাসরি লেখা যায়।</td></tr>
+              <tr><td>সাবটাইপ</td><td>Central Dhaka, Periphery Dhaka অথবা Others।</td></tr>
+              <tr><td>টাইপ</td><td>গেজেট অনুযায়ী প্লটের টাইপ (A1 থেকে A6)।</td></tr>
+              <tr><td>W1 (মিটার)</td><td>প্লট সংলগ্ন সবচেয়ে প্রশস্ত বিদ্যমান রাস্তার প্রস্থ, মিটারে।</td></tr>
+              <tr><td>রাস্তা প্রশস্তকরণ</td><td>"হ্যাঁ" বাছলে প্রস্তাবিত রাস্তার প্রস্থ (W2) ও সমর্পিত জমি (বর্গফুট) দেওয়ার ঘর আসবে।</td></tr>
+              <tr><td>জমির পরিমাণ (কাঠা)</td><td>প্রস্তাবিত রাস্তার জন্য সমর্পিত জায়গা বাদে জমির পরিমাণ। ১ কাঠা = ৭২০ বর্গফুট ধরা হয়।</td></tr>
+              <tr><td>TOD / TDR / FAR ক্রয়</td><td>প্রযোজ্য হলে FAR-এর মান (দশমিকে) লিখুন; না থাকলে ফাঁকা রাখুন।</td></tr>
+              <tr><td>FAR ডিসইনসেনটিভ</td><td>প্রযোজ্য হলে মান লিখুন; এটি FAR থেকে বিয়োগ হবে।</td></tr>
+              <tr><td>গ্রিন বিল্ডিং, ওপেন স্পেস, স্কুল, খেলার মাঠ</td><td>যেগুলো প্রযোজ্য সেগুলোর বাক্সে টিক দিন।</td></tr>
+            </tbody>
+          </table></div>
+          <button class="man-go" onclick="manualGo('calc')"><i class="fas fa-arrow-right"></i> এই ট্যাবে যান</button>
+        </div>
+      </details>
+
+      <details class="man-item">
+        <summary><i class="fas fa-building"></i> ইউনিট ও তলা সংখ্যা <em>MGC ভিত্তিক</em></summary>
+        <div class="man-in">
+          <p>আগে "FAR ক্যালকুলেটর" ট্যাবে চূড়ান্ত FAR হিসাব করে নিন। তারপর এই ট্যাবে:</p>
+          <ul>
+            <li><b>MGC স্লাইডার</b> টানুন। প্লটের আয়তন ও টাইপ অনুযায়ী সর্বনিম্ন ও সর্বোচ্চ সীমা নিজে থেকে ঠিক হয়।</li>
+            <li>স্লাইডার টানলেই <b>মোট তলা সংখ্যা</b>, মেঝের ক্ষেত্রফল ও ইউনিট সংখ্যা হালনাগাদ হয়।</li>
+            <li>নিচের <b>চিত্রে</b> দেখুন MGC বদলালে সাইট প্ল্যানে ভবনের আকার, তলার সংখ্যা এবং প্রতি তলার ক্ষেত্রফল কীভাবে বদলায়।</li>
+            <li>MGC বাড়ালে প্রতি তলা বড় হয় ও তলা কমে; MGC কমালে তলা বাড়ে। মোট মেঝের ক্ষেত্রফল একই থাকে।</li>
+          </ul>
+          <button class="man-go" onclick="manualGo('bonus')"><i class="fas fa-arrow-right"></i> এই ট্যাবে যান</button>
+        </div>
+      </details>
+
+      <details class="man-item">
+        <summary><i class="fas fa-list-ol"></i> হিসাবের ধাপ <em>সূত্রসহ বিবরণ</em></summary>
+        <div class="man-in">
+          <p>কোনো সংখ্যা কীভাবে এলো তা জানতে চাইলে এই ট্যাব খুলুন। এখানে প্রতিটি ধাপের কারণ, সূত্র এবং আপনার প্রকৃত সংখ্যা বসিয়ে গণনা দেখানো হয়। কোনো তথ্য বাদ থাকলে কোন তথ্য দিতে হবে তা জানিয়ে দেয়।</p>
+          <button class="man-go" onclick="manualGo('steps')"><i class="fas fa-arrow-right"></i> এই ট্যাবে যান</button>
+        </div>
+      </details>
+
+      <details class="man-item">
+        <summary><i class="fas fa-file-pdf"></i> PDF রিপোর্ট <em>ডাউনলোড</em></summary>
+        <div class="man-in">
+          <p>হিসাব শেষ করে এই ট্যাবের বাটনে চাপ দিলে দেওয়া তথ্য ও ফলাফলসহ একটি A4 রিপোর্ট PDF আকারে নামবে। রিপোর্ট নেওয়ার আগে FAR হিসাব করে নিতে ভুলবেন না।</p>
+          <button class="man-go" onclick="manualGo('pdf')"><i class="fas fa-arrow-right"></i> এই ট্যাবে যান</button>
+        </div>
+      </details>
+
+      <details class="man-item">
+        <summary><i class="fas fa-map-marked-alt"></i> মৌজা কোন সাবজোনে? <em>খোঁজ</em></summary>
+        <div class="man-in">
+          <p>মৌজার নাম লিখে খুঁজুন; ফলাফলে সেই মৌজা কোন জোন ও সাবজোনে পড়ে (পূর্ণ বা অংশ) এবং সাবজোনের সীমানা দেখা যাবে। সব মৌজার তালিকা দেখে সেখান থেকেও বেছে নিতে পারেন।</p>
+          <button class="man-go" onclick="manualGo('mouza')"><i class="fas fa-arrow-right"></i> এই ট্যাবে যান</button>
+        </div>
+      </details>
+
+      <h4 class="man-h"><i class="fas fa-spell-check"></i> শব্দের অর্থ</h4>
+      <div class="man-gloss">
+        <div><b>Area FAR</b><span>ব্লক বা এলাকা ভিত্তিক নির্ধারিত FAR।</span></div>
+        <div><b>Plot FAR</b><span>রাস্তার প্রস্থ, সাবটাইপ ও টাইপ অনুযায়ী প্লটের FAR। রাস্তা প্রশস্তকরণ থাকলে W1 ও W2-এর গড়।</span></div>
+        <div><b>Base FAR</b><span>Plot FAR ও Area FAR-এর মধ্যে ছোটটি।</span></div>
+        <div><b>Maximum FAR</b><span>Plot FAR ও Area FAR-এর মধ্যে বড়টি; অনুমোদিত FAR এর বেশি হতে পারে না।</span></div>
+        <div><b>Incentive FAR</b><span>প্লট আয়তন, রাস্তা, গ্রিন বিল্ডিং ইত্যাদি সুবিধার জন্য যুক্ত হওয়া অতিরিক্ত FAR।</span></div>
+        <div><b>Approved FAR</b><span>চূড়ান্ত অনুমোদিত FAR = বেস FAR + ইনসেনটিভ − ডিসইনসেনটিভ (সর্বোচ্চ FAR-এর মধ্যে সীমাবদ্ধ)।</span></div>
+        <div><b>MGC</b><span>Maximum Ground Coverage: প্লটের যত শতাংশ জমিতে ভবনের ভিত্তিতল (প্রতি তলা) থাকতে পারবে।</span></div>
+        <div><b>G+n</b><span>একটি Ground তলা এবং তার উপরে n সংখ্যক তলা। যেমন G+6 মানে মোট ৭ তলা।</span></div>
+      </div>
+
+      <h4 class="man-h"><i class="fas fa-lightbulb"></i> টিপস ও সাধারণ প্রশ্ন</h4>
+
+      <details class="man-item">
+        <summary>টাইপ A6 বাছলে কী হয়?</summary>
+        <div class="man-in"><p>A6 টাইপে অনুমোদিত FAR নির্ধারণে Plot FAR-ই ব্যবহৃত হয়, ইনসেনটিভ অংশের "A6 অপশন" ঘরটি লুকিয়ে যায় এবং ইউনিট সংখ্যা হিসাব করা হয় না।</p></div>
+      </details>
+      <details class="man-item">
+        <summary>"প্রথমে FAR হিসাব করুন" বার্তা কেন আসছে?</summary>
+        <div class="man-in"><p>তলা, ইউনিট বা PDF রিপোর্ট চূড়ান্ত FAR-এর ওপর নির্ভর করে। তাই আগে "FAR ক্যালকুলেটর" ট্যাবে সব তথ্য দিয়ে "চূড়ান্ত FAR হিসাব করুন" বাটন চাপুন এবং জমির পরিমাণ (কাঠা) দিন।</p></div>
+      </details>
+      <details class="man-item">
+        <summary>ইউনিট সংখ্যা দেখাচ্ছে না কেন?</summary>
+        <div class="man-in"><p>"ইউনিট/কাঠা" ঘরে মান থাকতে হবে। ব্লক নির্বাচন করলে মান নিজে থেকে বসে; না হলে নিজে লিখে দিন। টাইপ A6 হলে ইউনিট হিসাব হয় না।</p></div>
+      </details>
+      <details class="man-item">
+        <summary>মোবাইলে ট্যাবগুলো কোথায়?</summary>
+        <div class="man-in"><p>মোবাইলে পর্দার নিচে স্থির মেনু বার আছে; সেখান থেকে এক ট্যাপে যেকোনো ট্যাবে যাওয়া যায়।</p></div>
+      </details>
+      <details class="man-item">
+        <summary>রাজউক মাস্টারপ্ল্যান ম্যাপ কোথায় দেখব?</summary>
+        <div class="man-in"><p>পেজের উপরের <b>RAJUK Masterplan</b> বাটনে ক্লিক করুন। এটি রাজউকের অফিসিয়াল মাস্টারপ্ল্যান সাইট (masterplan.rajuk.gov.bd) নতুন ট্যাবে খুলবে, ফলে আপনার হিসাবের পেজ খোলাই থাকবে।</p></div>
+      </details>
+
+      <div class="man-warn">
+        <i class="fas fa-triangle-exclamation"></i>
+        <p>এই ক্যালকুলেটর একটি সহায়ক টুল। চূড়ান্ত অনুমোদনের ক্ষেত্রে সবসময় রাজউকের গেজেট, বিধিমালা ও কর্তৃপক্ষের সিদ্ধান্তই প্রযোজ্য। ব্যবহৃত দুটি মূল নথি পেজের উপরের বাটনগুলোতে পাওয়া যাবে।</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Mouza detail modal -->
 <div id="resultModal" class="modal-overlay">
   <div class="modal-container">
@@ -1648,6 +1911,7 @@ sel.onchange = () => {
         blockInfo.innerHTML = `<b>Area FAR:</b> <span class="mono">${block.far}</span> &nbsp;|&nbsp; <b>এলাকা:</b> ${block.area}`;
         blockInfo.classList.add('show');
         areaFarInput.value = block.far; // auto-fill, user may still edit manually
+        document.getElementById('unitPerKathaInput').value = block.unit; // auto-fill, user may still edit manually
     } else {
         blockInfo.innerHTML = '';
         blockInfo.classList.remove('show');
@@ -1790,20 +2054,19 @@ function toggleA6Option() {
 
     const areaFarWrap = document.getElementById("areaFarFieldWrap");
     const a6OptionWrap = document.getElementById("a6OptionFieldWrap");
+    const a6Hint = document.getElementById("areaFarA6Hint");
+
+    // Area FAR ইনপুট সব টাইপেই দেখাবে (ব্লক থেকে অটো-ফিল বা নিজে টাইপ করা যাবে)
+    areaFarWrap.style.display = "block";
+    if (a6Hint) a6Hint.style.display = isA6 ? "block" : "none";
+    const unitHint = document.getElementById("unitA6Hint");
+    if (unitHint) unitHint.style.display = isA6 ? "block" : "none";
 
     if (isA6) {
-        // Area FAR ইনপুট লুকাবে
-        areaFarWrap.style.display = "none";
-
-        // Area FAR এর মান 0 হবে
-        document.getElementById("areaFarInput").value = 0;
-
         // A6 টাইপে ইনসেনটিভ FAR-এর A6 অপশন লুকাবে ও মান রিসেট হবে
         a6OptionWrap.style.display = "none";
         document.getElementById("a6Option").value = "";
     } else {
-        // অন্যান্য টাইপে Area FAR ও A6 অপশন দেখাবে
-        areaFarWrap.style.display = "block";
         a6OptionWrap.style.display = "block";
     }
 }
@@ -2067,8 +2330,10 @@ function calculateBonus() {
         unitCard.style.display = '';
         incentiveUnitCard.style.display = '';
 
-        if (block) {
-            const unitVal = +block.unit || 0;
+        const unitRaw = document.getElementById('unitPerKathaInput').value;
+
+        if (unitRaw !== '' && !isNaN(+unitRaw)) {
+            const unitVal = +unitRaw || 0;
 
             // ৫) সর্বোচ্চ আবাসিক ইউনিট সংখ্যা
             const maxUnits = Math.ceil(netPlotKatha * unitVal);
@@ -2081,8 +2346,8 @@ function calculateBonus() {
 
         } else {
 
-            document.getElementById('maxUnits').textContent = 'ব্লক নির্বাচিত নয়';
-            document.getElementById('maxUnitsIncentive').textContent = 'ব্লক নির্বাচিত নয়';
+            document.getElementById('maxUnits').textContent = 'ইউনিট/কাঠা দিন';
+            document.getElementById('maxUnitsIncentive').textContent = 'ইউনিট/কাঠা দিন';
         }
     }
 
@@ -2480,20 +2745,21 @@ function renderCalcSteps(){
 
     // ১২) ইউনিট
     if (!isA6){
-        if (block){
-            const unitVal = +block.unit || 0;
+        const unitRaw = g('unitPerKathaInput').value;
+        if (unitRaw !== '' && !isNaN(+unitRaw)){
+            const unitVal = +unitRaw || 0;
             const mu = Math.ceil(pk * unitVal), mui = Math.ceil(mu * 1.1);
             add('সর্বোচ্চ আবাসিক ইউনিট',
-                'ব্লকের প্রতি কাঠায় ইউনিট সংখ্যা × জমির কাঠা (উপরে রাউন্ড)। প্রণোদনাসহ ইউনিট = সাধারণ ইউনিট × 1.1 (উপরে রাউন্ড)।',
-                ['ইউনিট/কাঠা (ব্লক) = ' + unitVal,
+                'প্রতি কাঠায় ইউনিট সংখ্যা × জমির কাঠা (উপরে রাউন্ড)। প্রণোদনাসহ ইউনিট = সাধারণ ইউনিট × 1.1 (উপরে রাউন্ড)।',
+                ['ইউনিট/কাঠা ' + (block && +block.unit === unitVal ? '(ব্লক থেকে) ' : '(ইনপুট) ') + '= ' + unitVal,
                  'সর্বোচ্চ ইউনিট = ⌈ ' + pk + ' × ' + unitVal + ' ⌉ = ' + mu,
                  'প্রণোদনাসহ     = ⌈ ' + mu + ' × 1.1 ⌉ = ' + mui],
                 'ইউনিট (সাধারণ / প্রণোদনাসহ)', mu + ' / ' + mui);
         } else {
             add('সর্বোচ্চ আবাসিক ইউনিট',
-                'ইউনিট হিসাবের জন্য ব্লকের ইউনিট/কাঠা মান প্রয়োজন।',
-                ['কোনো ব্লক নির্বাচিত নয়'], null, null,
-                'FAR ক্যালকুলেটর ট্যাবে ব্লক নির্বাচন করলে এই ধাপ হিসাব হবে।');
+                'ইউনিট হিসাবের জন্য ইউনিট/কাঠা মান প্রয়োজন।',
+                ['ইউনিট/কাঠা দেওয়া হয়নি'], null, null,
+                'FAR ক্যালকুলেটর ট্যাবে ব্লক নির্বাচন করুন অথবা ইউনিট/কাঠা নিজে লিখুন।');
         }
     }
 
@@ -2505,6 +2771,27 @@ function renderCalcSteps(){
         (st.note ? '<div class="cs-note"><i class="fas fa-circle-info"></i> ' + st.note + '</div>' : '') +
         '</div></div>').join('');
 }
+
+
+/* ---------- ব্যবহার নির্দেশিকা মডাল ---------- */
+function openManualModal(){
+    const m = document.getElementById('manualModal');
+    m.classList.add('active');
+    const b = m.querySelector('.man-body'); if (b) b.scrollTop = 0;
+}
+function closeManualModal(){
+    document.getElementById('manualModal').classList.remove('active');
+}
+function manualGo(tab){
+    closeManualModal();
+    switchTab(tab);
+}
+document.getElementById('manualModal').addEventListener('click', e => {
+    if (e.target.id === 'manualModal') closeManualModal();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+});
 
 /* =========================================================
    PART C — মৌজা → সাবজোন লুকআপ (mouza.html-এর লজিক, embedded JSON থেকে)
