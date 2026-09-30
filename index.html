@@ -399,6 +399,20 @@ footer.note{
 .cs-res b{font-family:'JetBrains Mono',monospace;font-size:.95rem}
 .cs-note{margin-top:.45rem;font-size:.75rem;color:var(--amber);line-height:1.6}
 @media(max-width:600px){.cs-step{padding:.8rem .7rem;gap:.6rem}.cs-num{flex-basis:28px;height:28px;font-size:.8rem}}
+/* ===== ব্লক নির্বাচন টুলটিপ ===== */
+.tip-icon{background:none;border:0;padding:0 .15rem;margin-left:.25rem;cursor:pointer;color:var(--forest);font-size:.95rem;line-height:1;vertical-align:middle;position:relative}
+.tip-icon::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(6,122,90,.35);animation:tipPulse 2.2s ease-out infinite}
+@keyframes tipPulse{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+.tip-wrap{position:relative}
+.tip-bubble{position:absolute;left:0;right:0;top:calc(100% + 12px);z-index:30;display:flex;gap:.65rem;align-items:flex-start;
+  background:linear-gradient(135deg,#067a5a,#04543e);color:#fff;border-radius:14px;padding:.8rem .95rem;font-size:.83rem;line-height:1.55;font-weight:500;
+  box-shadow:0 14px 28px -10px rgba(4,84,62,.55);opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s}
+.tip-bubble::before{content:"";position:absolute;top:-6px;left:22px;width:12px;height:12px;background:#067a5a;transform:rotate(45deg);border-radius:2px}
+.tip-bubble i{color:#ffd76a;font-size:1rem;margin-top:.15rem;flex:none}
+.tip-wrap:hover .tip-bubble,.tip-wrap.open .tip-bubble{opacity:1;visibility:visible;transform:translateY(0)}
+.auto-note{margin:.7rem 0 0;font-size:.78rem;color:var(--text-soft);text-align:center}
+.auto-note i{color:var(--forest);margin-right:.25rem}
 </style>
 <style>
 /* ---------- Steps (calculator) ---------- */
@@ -1288,12 +1302,15 @@ img,svg,video,canvas,iframe{max-width:100%}
           </div>
           <div class="field-grid">
             <div class="field">
-              <label>ব্লক নির্বাচন করুন</label>
-              <select id="blockSelect"><option value="">-- ব্লক নির্বাচন করুন --</option></select>
+              <label>ব্লক নির্বাচন করুন <button type="button" class="tip-icon" id="blockTipBtn" aria-label="ব্লক নির্বাচন সম্পর্কে তথ্য"><i class="fas fa-circle-info"></i></button></label>
+              <div class="tip-wrap" id="blockTipWrap">
+                <select id="blockSelect"><option value="">-- ব্লক নির্বাচন করুন --</option></select>
+                <div class="tip-bubble" role="tooltip"><i class="fas fa-lightbulb"></i><span>প্রয়োজনে RAJUK Masterplan থেকে RS দাগ ও মৌজা নাম্বার দিয়ে সার্চ করে Area FAR ও ইউনিট/কাঠা এর তথ্য দেখে ইনপুট দিতে পারেন।</span></div>
+              </div>
             </div>
             <div class="field" id="areaFarFieldWrap">
   <label>এরিয়া FAR <span class="hint">(নিজে লিখতে বা পরিবর্তন করতে পারবেন)</span></label>
-  <input id="areaFarInput" type="number" step="0.001" placeholder="যেমন: 3.400">
+  <input id="areaFarInput" type="number" step="0.01" placeholder="যেমন: 3.40">
   <div id="areaFarA6Hint" class="hint" style="display:none;margin-top:.35rem">টাইপ A6 এর ক্ষেত্রে অনুমোদিত FAR নির্ধারণে Plot FAR-ই ব্যবহৃত হয়; এই মান শুধু তথ্য হিসেবে থাকবে।</div>
 </div>
             <div class="field" id="unitPerKathaFieldWrap">
@@ -1399,23 +1416,24 @@ img,svg,video,canvas,iframe{max-width:100%}
         <button class="calc-btn" onclick="calculateAll()">
           <i class="fas fa-calculator"></i> চূড়ান্ত FAR হিসাব করুন
         </button>
+        <p class="auto-note"><i class="fas fa-bolt"></i>ইনপুট বদলালেই ফলাফল ও অন্যান্য ট্যাবের তথ্য স্বয়ংক্রিয়ভাবে হালনাগাদ হবে।</p>
 
         <div id="result" class="result">
           <div class="result-hero">
             <div class="label">অনুমোদিত FAR (Approved FAR)</div>
-            <div class="value" id="approvedFar">0.000</div>
+            <div class="value" id="approvedFar">0.00</div>
             <div class="unit" id="approvedFarNote">সর্বোচ্চ FAR ও ভিত্তি FARের মধ্যে ইনসেনটিভ সমন্বয়ের ফলাফল</div>
           </div>
 
           <div class="stat-grid">
-            <div class="stat-card"><div class="k">এরিয়া FAR</div><div class="v" id="areaFar">0.000</div></div>
-            <div class="stat-card"><div class="k">বিদ্যমান রাস্তার FAR (W1)</div><div class="v" id="w1Far">0.000</div></div>
-            <div class="stat-card" id="w2FarStatCard"><div class="k">প্রস্তাবিত রাস্তার FAR (W2)</div><div class="v" id="w2Far">0.000</div></div>
-            <div class="stat-card"><div class="k" id="plotFarLabel">প্লট FAR</div><div class="v" id="plotFar">0.000</div></div>
-            <div class="stat-card accent"><div class="k">বেস FAR</div><div class="v" id="baseFar">0.000</div></div>
-            <div class="stat-card accent"><div class="k">সর্বোচ্চ FAR</div><div class="v" id="maxFar">0.000</div></div>
-            <div class="stat-card"><div class="k">ইনসেনটিভ FAR</div><div class="v" id="incFar">0.000</div></div>
-            <div class="stat-card warn"><div class="k">FAR ডিসইনসেনটিভ</div><div class="v" id="disFar">0.000</div></div>
+            <div class="stat-card"><div class="k">এরিয়া FAR</div><div class="v" id="areaFar">0.00</div></div>
+            <div class="stat-card"><div class="k">বিদ্যমান রাস্তার FAR (W1)</div><div class="v" id="w1Far">0.00</div></div>
+            <div class="stat-card" id="w2FarStatCard"><div class="k">প্রস্তাবিত রাস্তার FAR (W2)</div><div class="v" id="w2Far">0.00</div></div>
+            <div class="stat-card"><div class="k" id="plotFarLabel">প্লট FAR</div><div class="v" id="plotFar">0.00</div></div>
+            <div class="stat-card accent"><div class="k">বেস FAR</div><div class="v" id="baseFar">0.00</div></div>
+            <div class="stat-card accent"><div class="k">সর্বোচ্চ FAR</div><div class="v" id="maxFar">0.00</div></div>
+            <div class="stat-card"><div class="k">ইনসেনটিভ FAR</div><div class="v" id="incFar">0.00</div></div>
+            <div class="stat-card warn"><div class="k">FAR ডিসইনসেনটিভ</div><div class="v" id="disFar">0.00</div></div>
           </div>
 
           <div class="breakdown">
@@ -1461,7 +1479,7 @@ img,svg,video,canvas,iframe{max-width:100%}
             <div><h3>Maximum Ground Coverage (MGC)</h3><span id="mgcRangeNote">স্লাইডার টেনে MGC নির্ধারণ করুন (সর্বনিম্ন ও সর্বোচ্চ সীমা প্লটের আয়তন ও টাইপ অনুযায়ী নির্ধারিত হবে)</span></div>
           </div>
           <div class="mgc-slider-wrap">
-            <input type="range" id="mgcSlider" min="20" max="75" step="0.5" value="50">
+            <input type="range" id="mgcSlider" min="20" max="75" step="0.01" value="50">
             <div class="mgc-labels">
               <span id="mgcMinLabel">20%</span>
               <span class="mgc-value" id="mgcValue">50%</span>
@@ -1511,7 +1529,7 @@ img,svg,video,canvas,iframe{max-width:100%}
           </div>
 
           <div class="stat-grid">
-            <div class="stat-card"><div class="k">অনুমোদিত FAR</div><div class="v" id="bonusApprovedFar">0.000</div></div>
+            <div class="stat-card"><div class="k">অনুমোদিত FAR</div><div class="v" id="bonusApprovedFar">0.00</div></div>
             <div class="stat-card"><div class="k">প্লট আয়তন (কাঠা)</div><div class="v" id="bonusPlotKatha">0.00</div></div>
             <div class="stat-card"><div class="k">সমর্পিত জমি (বর্গফুট)</div><div class="v" id="bonusSurrLand">0.00</div></div>
             <div class="stat-card"><div class="k">সমর্পিত জমি বাদে প্লট (কাঠা)</div><div class="v" id="netPlotKatha">0.000</div></div>
@@ -1916,6 +1934,7 @@ sel.onchange = () => {
         blockInfo.innerHTML = '';
         blockInfo.classList.remove('show');
     }
+    if (typeof autoRecalc === 'function') autoRecalc();
 };
 
 document.querySelectorAll('.toggle input[type="checkbox"]').forEach(cb => {
@@ -1966,6 +1985,8 @@ document.getElementById('blocksModal').addEventListener('click', (e) => {
 document.getElementById('blocksFilterInput').addEventListener('input', (e) => renderBlocksTable(e.target.value));
 
 
+const r2 = x => Math.round((Number(x) + Number.EPSILON) * 100) / 100;
+
 function plotFarCalc(sub, type, w) {
     const r = farData[sub][type];
     let f = 0;
@@ -1980,7 +2001,7 @@ function plotFarCalc(sub, type, w) {
         if (r[7] != null && r[8] != null) f = ((r[8] - r[7]) / 6) * (w - 18) + r[7];
         else f = r[7] || r[8] || 0;
     } else if (w >= 24 && r[8] != null) f = r[8];
-    return f;
+    return r2(f);
 }
 
 function incentive() {
@@ -1993,7 +2014,7 @@ function incentive() {
     else if (pk >= 15 && pk < 20) i.plot = 0.65;
     else if (pk >= 20) i.plot = 0.75;
     else i.plot = 0;
-    i.road = rw >= 30 ? Math.min((rw - 30) * 0.02, 1) : 0;
+    i.road = rw >= 30 ? r2(Math.min((rw - 30) * 0.02, 1)) : 0;
     if (type.value !== 'A6') {
         if (a6Option.value == 'units' && pk >= 10) i.a6 = 0.5;
         else if (a6Option.value == 'floorSpace' && pk >= 20) i.a6 = 0.75;
@@ -2001,16 +2022,13 @@ function incentive() {
     }
     i.green = green.checked ? 0.5 : 0;
     i.open = open.checked ? 0.5 : 0;
-    i.tod = +tod.value || 0;
-    i.tdr = +tdr.value || 0;
-    i.purchase = +purchase.value || 0;
+    i.tod = r2(+tod.value || 0);
+    i.tdr = r2(+tdr.value || 0);
+    i.purchase = r2(+purchase.value || 0);
     i.school = school.checked ? 0.25 : 0;
     i.play = play.checked ? 0.25 : 0;
     let total = Object.values(i).reduce((a, b) => a + b, 0);
-    return {
-        breakdown: i,
-        total: +total.toFixed(2)
-    };
+    return { breakdown: i, total: r2(total) };
 }
 
 const incentiveLabels = {
@@ -2070,35 +2088,55 @@ function toggleA6Option() {
         a6OptionWrap.style.display = "block";
     }
 }
-function calculateAll() {
+function clearFarResult() {
+    document.getElementById('result').classList.remove('show');
+    ['areaFAR','existingRoadFAR','proposedRoadFAR','plotFAR','baseFAR','maximumFAR','incentiveFAR','approvedFAR']
+        .forEach(k => { window[k] = undefined; });
+}
 
+/* সব নির্ভরশীল ট্যাব (ইউনিট ও তলা, হিসাবের ধাপ) হালনাগাদ */
+function refreshDependents() {
+    try { calculateBonus(); } catch (e) { console.error('bonus refresh:', e); }
+    try { renderCalcSteps(); } catch (e) { console.error('steps refresh:', e); }
+}
+
+/* opts.silent = true হলে alert/স্ক্রল ছাড়াই নীরবে হিসাব হবে (অটো-আপডেটের জন্য) */
+function calculateAll(opts) {
+
+    const silent = !!(opts && opts.silent);
     const isA6 = type.value === 'A6';
-
-    // A6 ছাড়া Area FAR আবশ্যক
-    if (!isA6 && (areaFarInput.value === '' || isNaN(+areaFarInput.value))) {
-        return alert('অনুগ্রহ করে একটি ব্লক নির্বাচন করুন অথবা এরিয়া FAR সরাসরি লিখুন');
-    }
 
     const hasWidening =
         document.getElementById('roadWideningProposal').value === 'yes';
 
+    // তথ্য অসম্পূর্ণ হলে ফলাফল সরিয়ে নির্ভরশীল ট্যাবও রিসেট
+    const basicsMissing = !subType.value || !type.value || !(+w1.value > 0) ||
+        (hasWidening && !(+w2.value > 0));
+    const areaMissing = !isA6 && (areaFarInput.value === '' || isNaN(+areaFarInput.value));
+
+    if (basicsMissing || areaMissing) {
+        clearFarResult();
+        refreshDependents();
+        if (silent) return;
+        return alert(basicsMissing
+            ? 'অনুগ্রহ করে সাবটাইপ, টাইপ ও রাস্তার প্রস্থ (W1' + (hasWidening ? ', W2' : '') + ') দিন'
+            : 'অনুগ্রহ করে একটি ব্লক নির্বাচন করুন অথবা এরিয়া FAR সরাসরি লিখুন');
+    }
+
     const f1 = plotFarCalc(subType.value, type.value, +w1.value);
     const f2 = hasWidening ? plotFarCalc(subType.value, type.value, +w2.value) : 0;
+    const plot = hasWidening ? r2((f1 + f2) / 2) : f1;
 
-    const plot = hasWidening ? (f1 + f2) / 2 : f1;
-
-    // A6 হলে Area FAR = 0
-    const area = isA6 ? 0 : (+areaFarInput.value);
-
+    const area = isA6 ? 0 : r2(+areaFarInput.value);
     const base = isA6 ? plot : Math.min(plot, area);
     const maximum = isA6 ? plot : Math.max(plot, area);
 
     const inc = incentive();
-    const disv = +dis.value || 0;
+    const disv = r2(+dis.value || 0);
 
     const approved = isA6
         ? plot
-        : Math.min(maximum, base + inc.total - disv);
+        : r2(Math.min(maximum, base + inc.total - disv));
 
     document.getElementById('result').classList.add('show');
 
@@ -2106,24 +2144,24 @@ function calculateAll() {
     document.getElementById('areaFar').parentElement.style.display =
         isA6 ? 'none' : '';
 
-    areaFar.textContent = area.toFixed(3);
+    areaFar.textContent = area.toFixed(2);
 
-    w1Far.textContent = f1.toFixed(3);
+    w1Far.textContent = f1.toFixed(2);
 
     document.getElementById('w2FarStatCard').style.display =
         hasWidening ? '' : 'none';
 
-    w2Far.textContent = hasWidening ? f2.toFixed(3) : '0.000';
+    w2Far.textContent = hasWidening ? f2.toFixed(2) : '0.00';
 
     document.getElementById('plotFarLabel').textContent =
         hasWidening ? 'প্লট FAR (গড়)' : 'প্লট FAR';
 
-    plotFar.textContent = plot.toFixed(3);
-    baseFar.textContent = base.toFixed(3);
-    maxFar.textContent = maximum.toFixed(3);
-    incFar.textContent = inc.total.toFixed(3);
-    disFar.textContent = disv.toFixed(3);
-    approvedFar.textContent = approved.toFixed(3);
+    plotFar.textContent = plot.toFixed(2);
+    baseFar.textContent = base.toFixed(2);
+    maxFar.textContent = maximum.toFixed(2);
+    incFar.textContent = inc.total.toFixed(2);
+    disFar.textContent = disv.toFixed(2);
+    approvedFar.textContent = approved.toFixed(2);
 
     document.getElementById('approvedFarNote').textContent = isA6
         ? 'টাইপ A6 নির্বাচিত হওয়ায় Area FAR প্রযোজ্য নয় এবং Plot FAR-ই Approved FAR হিসেবে গণনা করা হয়েছে।'
@@ -2149,11 +2187,39 @@ function calculateAll() {
     window.incentiveFAR = inc.total;
     window.approvedFAR = approved;
 
-    document.getElementById('result').scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-    });
+    // অন্যান্য ট্যাবের তথ্য সাথে সাথে হালনাগাদ
+    refreshDependents();
+
+    if (!silent) {
+        document.getElementById('result').scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest'
+        });
+    }
 }
+
+/* ---------- FAR ক্যালকুলেটর ট্যাবে যেকোনো পরিবর্তনে অটো-রিক্যালকুলেশন ---------- */
+let _autoRecalcTimer = null;
+function autoRecalc() {
+    clearTimeout(_autoRecalcTimer);
+    _autoRecalcTimer = setTimeout(() => calculateAll({ silent: true }), 120);
+}
+(function () {
+    const calcTabEl = document.getElementById('calcTab');
+    ['input', 'change'].forEach(ev => calcTabEl.addEventListener(ev, autoRecalc));
+
+    // ব্লক টুলটিপ: মোবাইলে ⓘ আইকনে ট্যাপ করলে খুলবে/বন্ধ হবে
+    const tipBtn = document.getElementById('blockTipBtn');
+    const tipWrap = document.getElementById('blockTipWrap');
+    tipBtn.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        tipWrap.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+        if (!tipWrap.contains(e.target)) tipWrap.classList.remove('open');
+    });
+    document.getElementById('blockSelect').addEventListener('change', () => tipWrap.classList.remove('open'));
+})();
 
 /* =========================================================
    PART B2 — ইউনিট ও তলা সংখ্যা হিসাব (MGC ভিত্তিক)
@@ -2220,7 +2286,7 @@ function syncMGCSlider(){
 
     mgcSlider.min = sliderMin;
     mgcSlider.max = sliderMax;
-    mgcSlider.step = 0.5;
+    mgcSlider.step = 0.01;
 
     let v = parseFloat(mgcSlider.value);
     if (isNaN(v)) v = sliderMax;
@@ -2297,7 +2363,7 @@ function calculateBonus() {
     const totalFloors = Math.ceil(totalFloorArea / (mgc * netPlotSqft));
 
     // ফলাফল দেখানো
-    document.getElementById('bonusApprovedFar').textContent = approvedFAR.toFixed(3);
+    document.getElementById('bonusApprovedFar').textContent = approvedFAR.toFixed(2);
     document.getElementById('bonusPlotKatha').textContent = plotK.toFixed(2);
     document.getElementById('bonusSurrLand').textContent = surrSqft.toFixed(2);
     document.getElementById('netPlotKatha').textContent = netPlotKatha.toFixed(3);
@@ -2353,7 +2419,7 @@ function calculateBonus() {
 
     // মোট তলা (Ground + উপরের তলা)
     document.getElementById('totalFloorsDisplay').textContent =
-        'G+' + Math.max(totalFloors - 1, 0);
+        'G+' + Math.max(totalFloors , 0);
 
     // MGC অনুযায়ী চিত্র হালনাগাদ
     try {
@@ -2387,12 +2453,13 @@ function renderMGCViz(o){
     const plot = o.plot, total = o.total, cur = o.cur;
     const limMin = o.limMin, limMax = o.limMax;
     const f0 = n => Math.round(n).toLocaleString('en-US');
-    const floorsAt = m => Math.ceil(total / ((m / 100) * plot));
+    const floorsAt = m => Math.ceil(total / ((m / 100) * plot)) + 1;   // মোট তলা (G সহ)
 
-    const n = floorsAt(cur);
+    const N = floorsAt(cur) - 1;                                        // G+N এর N
+    const n = N + 1;
     const foot = (cur / 100) * plot;                 // প্রতি তলার ক্ষেত্রফল (ফুটপ্রিন্ট)
     const open = plot - foot;                        // খোলা জায়গা
-    const topArea = total - (n - 1) * foot;          // উপরের তলার ক্ষেত্রফল
+    const topArea = total - (N - 1) * foot;          // উপরের তলার ক্ষেত্রফল
     const frac = Math.min(Math.max(topArea / foot, 0), 1);
     const sq = Math.sqrt(cur / 100);
 
@@ -2413,7 +2480,7 @@ function renderMGCViz(o){
     if (_vizPrev && _vizPrev.key === key && _vizPrev.cur !== cur){
         const dm = cur - _vizPrev.cur, df = foot - _vizPrev.foot, dn = n - _vizPrev.n;
         const sg = v => (v > 0 ? '+' : v < 0 ? '−' : '');
-        dEl.innerHTML = 'MGC <b>' + _vizPrev.cur + '% → ' + cur + '%</b> (' + sg(dm) + Math.abs(dm).toFixed(1).replace(/\.0$/, '') + '%) · ' +
+        dEl.innerHTML = 'MGC <b>' + _vizPrev.cur + '% → ' + cur + '%</b> (' + sg(dm) + Math.abs(dm).toFixed(2).replace(/\.?0+$/, '') + '%) · ' +
             'প্রতি তলা <b class="' + (df >= 0 ? 'up' : 'down') + '">' + sg(df) + f0(Math.abs(df)) + ' বর্গফুট</b> · ' +
             'তলা সংখ্যা <b class="' + (dn <= 0 ? 'up' : 'down') + '">' + (dn === 0 ? 'অপরিবর্তিত' : sg(dn) + Math.abs(dn) + ' তলা') + '</b>';
         dEl.classList.add('show');
@@ -2511,7 +2578,7 @@ function renderMGCViz(o){
     ch += '<line x1="' + L + '" y1="' + (T + ih) + '" x2="' + (W - R) + '" y2="' + (T + ih) + '" stroke="#54655d"/>';
 
     const pts = [];
-    for (let m = x0; m <= x1 + 1e-9; m += 0.25) pts.push(m);
+    for (let m = x0; m <= x1 + 1e-9; m += 0.1) pts.push(m);
     if (pts[pts.length - 1] < x1) pts.push(x1);
     let sp = 'M' + xp(pts[0]).toFixed(1) + ' ' + yL(floorsAt(pts[0])).toFixed(1);
     for (let i = 1; i < pts.length; i++){
@@ -2558,7 +2625,7 @@ function renderMGCViz(o){
    ========================================================= */
 function plotFarExplain(sub, ty, w){
     const r = farData[sub][ty];
-    const n3 = x => Number(x).toFixed(3);
+    const n3 = x => Number(x).toFixed(2);
     const fixed = (lo, hi, a) => ({ lo, hi, a });
     const interp = (lo, hi, a, b, den) => ({ lo, hi, a, b, den });
     const bands = [
@@ -2571,7 +2638,7 @@ function plotFarExplain(sub, ty, w){
             if (b.b === undefined){
                 if (r[b.a] != null) return { f: r[b.a], band: b.lo + " ≤ W &lt; " + b.hi + " মি.", lines: ["নির্ধারিত মান = " + n3(r[b.a])] };
             } else if (r[b.a] != null && r[b.b] != null){
-                const f = ((r[b.b] - r[b.a]) / b.den) * (w - b.lo) + r[b.a];
+                const f = r2(((r[b.b] - r[b.a]) / b.den) * (w - b.lo) + r[b.a]);
                 return { f, band: b.lo + " ≤ W &lt; " + b.hi + " মি. (ইন্টারপোলেশন)",
                     lines: ["FAR = ((" + n3(r[b.b]) + " − " + n3(r[b.a]) + ") ÷ " + b.den + ") × (" + w + " − " + b.lo + ") + " + n3(r[b.a]),
                             "    = " + n3(f)] };
@@ -2589,8 +2656,11 @@ function plotFarExplain(sub, ty, w){
 function renderCalcSteps(){
     const root = document.getElementById('stepsBody');
     const g = id => document.getElementById(id);
-    const n3 = x => Number(x).toFixed(3);
+    const n3 = x => Number(x).toFixed(2);
     const f0 = x => Math.round(x).toLocaleString('en-US');
+    const SQM = 0.09290304;                                   // ১ বর্গফুট = ০.০৯২৯০৩০৪ বর্গমিটার
+    const m2 = x => Number((x * SQM).toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
+    const sf = x => f0(x) + ' বর্গফুট (' + m2(x) + ' বর্গমিটার)';   // বর্গফুট + বর্গমিটার একসাথে
     const subLabel = { central_dhaka: 'Central Dhaka', periphery_dhaka: 'Periphery Dhaka', others: 'Others' };
 
     const sub = g('subType').value, ty = g('type').value;
@@ -2621,12 +2691,13 @@ function renderCalcSteps(){
         [
             'সাবটাইপ = ' + subLabel[sub] + '   |   টাইপ = ' + ty,
             'W1 = ' + w1v + ' মি.' + (hasW ? '   |   W2 = ' + w2v + ' মি.' : '   |   রাস্তা প্রশস্তকরণ = নেই'),
-            'জমি (সমর্পিত জায়গা বাদে) = ' + pk + ' কাঠা' + (hasW ? '   |   সমর্পিত জমি = ' + surr + ' বর্গফুট' : ''),
+            'জমি (সমর্পিত জায়গা বাদে) = ' + pk + ' কাঠা = ' + sf(pk * KATHA_TO_SQFT),
+            hasW ? 'সমর্পিত জমি = ' + sf(surr) : 'সমর্পিত জমি = নেই',
             'ব্লক = ' + (block ? block.name : (isA6 ? 'প্রযোজ্য নয় (A6)' : 'সরাসরি লেখা এরিয়া FAR'))
         ]);
 
     // ২) এরিয়া FAR
-    const area = isA6 ? 0 : (+g('areaFarInput').value);
+    const area = isA6 ? 0 : r2(+g('areaFarInput').value);
     add('এরিয়া FAR নির্ধারণ',
         isA6 ? 'টাইপ A6 হলে এরিয়া FAR প্রযোজ্য নয়, তাই 0 ধরা হয়।'
              : 'নির্বাচিত ব্লকের (অথবা আপনার লেখা) এরিয়া FAR-ই এখানে ব্যবহৃত হয়।',
@@ -2649,7 +2720,7 @@ function renderCalcSteps(){
             'একই পদ্ধতিতে প্রস্তাবিত (প্রশস্ত) রাস্তার প্রস্থ W2 দিয়ে FAR বের করা হয়।',
             ['সীমা: ' + e2.band].concat(e2.lines),
             'W2 FAR', n3(f2));
-        plot = (e1.f + f2) / 2;
+        plot = r2((e1.f + f2) / 2);
         add('প্লট FAR নির্ধারণ',
             'রাস্তা প্রশস্তকরণ থাকলে W1 ও W2 এর FAR এর গড়ই প্লট FAR।',
             ['প্লট FAR = (W1 FAR + W2 FAR) ÷ 2', '        = (' + n3(e1.f) + ' + ' + n3(f2) + ') ÷ 2'],
@@ -2689,17 +2760,17 @@ function renderCalcSteps(){
     incMath.push('মোট ইনসেনটিভ FAR = ' + Object.values(b).map(v => v.toFixed(2)).join(' + ') + ' = ' + inc.total.toFixed(2));
     add('ইনসেনটিভ FAR',
         'প্লট আয়তন, রাস্তার প্রস্থ ও নির্বাচিত সুবিধাগুলো থেকে পাওয়া ইনসেনটিভ যোগ করা হয়।',
-        incMath, 'ইনসেনটিভ FAR', inc.total.toFixed(3));
+        incMath, 'ইনসেনটিভ FAR', inc.total.toFixed(2));
 
     // ৭) অনুমোদিত FAR
-    const disv = +g('dis').value || 0;
-    const approved = isA6 ? plot : Math.min(maximum, base + inc.total - disv);
+    const disv = r2(+g('dis').value || 0);
+    const approved = isA6 ? plot : r2(Math.min(maximum, base + inc.total - disv));
     add('অনুমোদিত FAR (Approved FAR)',
         isA6 ? 'A6 এর ক্ষেত্রে অনুমোদিত FAR = প্লট FAR।'
              : 'বেস FAR এর সাথে ইনসেনটিভ যোগ ও ডিসইনসেনটিভ বিয়োগ করা হয়; ফলাফল সর্বোচ্চ FAR ছাড়াতে পারে না।',
         isA6 ? ['অনুমোদিত FAR = ' + n3(plot)]
-             : ['বেস + ইনসেনটিভ − ডিসইনসেনটিভ = ' + n3(base) + ' + ' + inc.total.toFixed(2) + ' − ' + disv.toFixed(2) + ' = ' + (base + inc.total - disv).toFixed(3),
-                'অনুমোদিত FAR = min(সর্বোচ্চ FAR, ' + (base + inc.total - disv).toFixed(3) + ') = min(' + n3(maximum) + ', ' + (base + inc.total - disv).toFixed(3) + ')'],
+             : ['বেস + ইনসেনটিভ − ডিসইনসেনটিভ = ' + n3(base) + ' + ' + inc.total.toFixed(2) + ' − ' + disv.toFixed(2) + ' = ' + (base + inc.total - disv).toFixed(2),
+                'অনুমোদিত FAR = min(সর্বোচ্চ FAR, ' + (base + inc.total - disv).toFixed(2) + ') = min(' + n3(maximum) + ', ' + (base + inc.total - disv).toFixed(2) + ')'],
         'অনুমোদিত FAR', n3(approved),
         (!isA6 && base + inc.total - disv > maximum) ? 'ইনসেনটিভসহ মান সর্বোচ্চ FAR ছাড়িয়ে যাওয়ায় সর্বোচ্চ FAR-এ সীমাবদ্ধ করা হয়েছে।' : '');
 
@@ -2707,18 +2778,19 @@ function renderCalcSteps(){
     const K = KATHA_TO_SQFT;
     const netSqft = pk * K;
     add('প্লটের আয়তন বর্গফুটে',
-        'দেওয়া জমির পরিমাণ (সমর্পিত জায়গা আগেই বাদ দেওয়া) কাঠা থেকে বর্গফুটে রূপান্তর, ১ কাঠা = ' + K + ' বর্গফুট।',
-        ['নিট প্লট = ' + pk + ' × ' + K + ' = ' + f0(netSqft) + ' বর্গফুট'],
-        'নিট প্লট (বর্গফুট)', f0(netSqft));
+        'দেওয়া জমির পরিমাণ (সমর্পিত জায়গা আগেই বাদ দেওয়া) কাঠা থেকে বর্গফুটে রূপান্তর, ১ কাঠা = ' + K + ' বর্গফুট। বর্গমিটারে রূপান্তরে ১ বর্গফুট = ০.০৯২৯০৩০৪ বর্গমিটার।',
+        ['নিট প্লট = ' + pk + ' × ' + K + ' = ' + f0(netSqft) + ' বর্গফুট',
+         'বর্গমিটারে = ' + f0(netSqft) + ' × 0.09290304 = ' + m2(netSqft) + ' বর্গমিটার'],
+        'নিট প্লট', sf(netSqft));
 
     // ৯) মেঝের ক্ষেত্রফল
     const apFA = netSqft * approved, incFA = surr * 3, totFA = apFA + incFA;
     add('মেঝের ক্ষেত্রফল',
         'অনুমোদিত FAR × প্লটের আয়তন = FAR অনুযায়ী মেঝের ক্ষেত্রফল। সমর্পিত জমির ৩ গুণ প্রণোদনা মেঝের ক্ষেত্রফল হিসেবে যোগ হয়।',
-        ['FAR অনুযায়ী = ' + f0(netSqft) + ' × ' + n3(approved) + ' = ' + f0(apFA) + ' বর্গফুট',
-         'প্রণোদনা     = ' + f0(surr) + ' × 3 = ' + f0(incFA) + ' বর্গফুট',
-         'মোট          = ' + f0(apFA) + ' + ' + f0(incFA) + ' = ' + f0(totFA) + ' বর্গফুট'],
-        'মোট মেঝের ক্ষেত্রফল', f0(totFA) + ' বর্গফুট');
+        ['FAR অনুযায়ী = ' + f0(netSqft) + ' × ' + n3(approved) + ' = ' + sf(apFA),
+         'প্রণোদনা     = ' + f0(surr) + ' × 3 = ' + sf(incFA),
+         'মোট          = ' + f0(apFA) + ' + ' + f0(incFA) + ' = ' + sf(totFA)],
+        'মোট মেঝের ক্ষেত্রফল', sf(totFA));
 
     // ১০) MGC
     if (typeof syncMGCSlider === 'function') syncMGCSlider();
@@ -2735,13 +2807,13 @@ function renderCalcSteps(){
     const mgc = mgcPct / 100;
     const foot = mgc * netSqft;
     const raw = totFA / foot;
-    const floors = Math.ceil(totFA / (mgc * netSqft));
+    const floors = Math.ceil(totFA / (mgc * netSqft));   // N
     add('প্রতি তলার ক্ষেত্রফল ও তলা সংখ্যা',
-        'ভবনের ফুটপ্রিন্ট (প্রতি তলার ক্ষেত্রফল) = MGC × প্লট। মোট মেঝের ক্ষেত্রফলকে তা দিয়ে ভাগ করে পূর্ণসংখ্যায় উপরে রাউন্ড করলে মোট তলা পাওয়া যায়।',
-        ['প্রতি তলা = ' + mgc + ' × ' + f0(netSqft) + ' = ' + f0(foot) + ' বর্গফুট',
-         'তলা সংখ্যা = ⌈ ' + f0(totFA) + ' ÷ ' + f0(foot) + ' ⌉ = ⌈ ' + raw.toFixed(3) + ' ⌉ = ' + floors,
-         'অর্থাৎ Ground + ' + Math.max(floors - 1, 0) + ' = G+' + Math.max(floors - 1, 0)],
-        'মোট তলা', floors + ' (G+' + Math.max(floors - 1, 0) + ')');
+        'ফুটপ্রিন্ট = MGC × প্লট। মোট মেঝের ক্ষেত্রফলকে তা দিয়ে ভাগ করে উপরে রাউন্ড করলে N পাওয়া যায়; Ground সহ মোট তলা = N + 1 এবং G+N।',
+        ['প্রতি তলা = ' + mgc + ' × ' + f0(netSqft) + ' = ' + sf(foot),
+         'N = ⌈ ' + f0(totFA) + ' বর্গফুট ÷ ' + f0(foot) + ' বর্গফুট ⌉ = ⌈ ' + raw.toFixed(3) + ' ⌉ = ' + floors,
+         'মোট তলা = ' + floors + ' + 1 = ' + (floors + 1) + '   →   G+' + floors],
+        'মোট তলা', (floors + 1) + ' (G+' + floors + ')');
 
     // ১২) ইউনিট
     if (!isA6){
